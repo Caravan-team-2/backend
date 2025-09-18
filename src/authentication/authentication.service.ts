@@ -124,7 +124,7 @@ export class AuthenticationService {
       throw new BadRequestException('Invalid verification code');
     }
     user.isMailVerified = true;
-    await this.userService.updateUser(user);
+    await this.userService.updateUser(user,user.id);
     await this.redisService.del(`verification:${email}`);
     return {
       message: 'Email verified successfully.',
@@ -160,7 +160,7 @@ export class AuthenticationService {
       throw new NotFoundException('User not found');
     }
     user.password = await generateHash(password);
-    await this.userService.updateUser(user);
+    await this.userService.updateUser(user,user.id);
     await this.redisService.del(`password-reset:${token}`);
     return {
       message: 'Password reset successfully.',
