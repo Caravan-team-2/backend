@@ -1,14 +1,13 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { LocalGuard } from './guards/local.guard';
-import { USER } from './decorators/user.decorartor';
+import { USER } from './decorators/user.decorator';
 import { User } from 'src/user/entities/user.entity';
 import { registerDto } from './dtos/requests/register.dto';
 import { ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthResponseDto } from './dtos/responses/auth-response.dto';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
 import { GoogleGuard } from './guards/oauth/google.guard';
-import { USER_REST } from './decorators/user-rest.decorator';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -32,7 +31,7 @@ export class AuthenticationController {
     description:
       'Bad Request. The request body is invalid or missing required fields.',
   })
-  async login(@USER_REST() user: User) {
+  async login(@USER() user: User) {
     return this.authenticationService.issueTokens(user);
   }
   @ApiOperation({

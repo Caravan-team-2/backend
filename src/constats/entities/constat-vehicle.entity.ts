@@ -53,7 +53,7 @@ export class ConstatVehicle {
 
   @ManyToOne(
     () => InsuranceCompany,
-    (insuranceCompany) => insuranceCompany.constatVehicles,
+    (insuranceCompany) => insuranceCompany.constatVehicle,
   )
   @JoinColumn({ name: 'insurer_id' })
   @Field(() => InsuranceCompany)

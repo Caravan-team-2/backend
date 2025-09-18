@@ -1,7 +1,7 @@
 import { Query, Resolver } from '@nestjs/graphql';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
-import { USER } from 'src/authentication/decorators/user.decorartor';
+import { USER } from 'src/authentication/decorators/user.decorator';
 import { UseGuards } from '@nestjs/common';
 import { AcessTokenGuard } from 'src/authentication/guards/access-token.guard';
 
