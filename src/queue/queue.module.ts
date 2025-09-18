@@ -36,9 +36,9 @@ import { UploadProcessor } from './upload/upload.processor';
     ),
     CloudinaryModuleWrapper,
     EmailModule,
-    SearchModule,
+//    SearchModule,
   ],
-  providers: [MailProcessor, SearchProcessor, UploadProcessor],
+  providers: [MailProcessor,  UploadProcessor],
   exports: [BullModule],
 })
 export class QueueModule {}
