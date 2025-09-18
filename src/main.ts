@@ -69,7 +69,7 @@ async function bootstrap() {
   );
 
   //FILTERS
-  app.useGlobalFilters(new HttpExceptionFilter());
+  //app.useGlobalFilters(new HttpExceptionFilter());
   // app.useGlobalFilters(new CustomWsExceptionFilter());
   //app.useGlobalFilters(new ElasticSearchExceptionFilter()); //TODO:figure out what error to catch
   //--

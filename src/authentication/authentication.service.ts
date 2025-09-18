@@ -57,6 +57,7 @@ export class AuthenticationService {
 
       const jwtConfig = authConfig().jwt;
 
+      console.log(jwtConfig)
       const [accessToken, refreshToken] = await Promise.all([
         this.jwtService.signAsync(accessTokenPayload, {
           expiresIn: jwtConfig.accessTokenExpiresIn,

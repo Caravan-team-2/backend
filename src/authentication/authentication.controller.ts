@@ -8,6 +8,7 @@ import { ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthResponseDto } from './dtos/responses/auth-response.dto';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
 import { GoogleGuard } from './guards/oauth/google.guard';
+import { USER_REST } from './decorators/user-rest.decorator';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -31,7 +32,7 @@ export class AuthenticationController {
     description:
       'Bad Request. The request body is invalid or missing required fields.',
   })
-  async login(@USER() user: User) {
+  async login(@USER_REST() user: User) {
     return this.authenticationService.issueTokens(user);
   }
   @ApiOperation({
