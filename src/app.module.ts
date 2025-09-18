@@ -21,6 +21,10 @@ import appConfig from './config/app.config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { VerificationModule } from './verification/verification.module';
+import { ConstatsModule } from './constats/constats.module';
+import { InsurranceCompanyModule } from './insurrance_company/insurrance_company.module';
+import { SignatureModule } from './signature/signature.module';
 import databaseConfig from './config/database.config';
 @Module({
   imports: [
@@ -56,6 +60,10 @@ import databaseConfig from './config/database.config';
     EmailModule,
     HealthModule,
     QueueModule,
+    VerificationModule,
+    ConstatsModule,
+    InsurranceCompanyModule,
+    SignatureModule,
   ],
   controllers: [AppController],
   providers: [AppService],

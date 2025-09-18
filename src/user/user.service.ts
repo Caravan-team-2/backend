@@ -22,6 +22,7 @@ export class UserService {
     return this.userRepository.save(newUser);
   }
   findByEmail(email: string): Promise<User | null> {
+    console.log('finding user with email',email)
     return this.userRepository.findOne({ where: { email } });
   }
   findById(id: string): Promise<User | null> {

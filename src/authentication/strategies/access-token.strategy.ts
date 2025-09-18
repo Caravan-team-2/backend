@@ -20,7 +20,7 @@ export class AccessTokenStrategy extends PassportStrategy(
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: true,
+      ignoreExpiration: false,
       secretOrKey: config.jwt.accessTokenSecret,
     });
   }

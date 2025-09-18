@@ -52,12 +52,11 @@ export class AuthenticationService {
   async issueTokens(user: User): Promise<AuthResponseDto> {
     try {
       const { id, email } = user;
-      const accessTokenPayload = { sub: id, email };
+      const accessTokenPayload = { sub: id, user: { id, email } };
       const refreshTokenPayload = { sub: id, email, type: 'refresh' };
 
       const jwtConfig = authConfig().jwt;
 
-      console.log(jwtConfig)
       const [accessToken, refreshToken] = await Promise.all([
         this.jwtService.signAsync(accessTokenPayload, {
           expiresIn: jwtConfig.accessTokenExpiresIn,

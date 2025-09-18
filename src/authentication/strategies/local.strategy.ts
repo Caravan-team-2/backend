@@ -18,7 +18,6 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
       email,
       password,
     );
-    console.log(result);
     return result;
   }
 }
