@@ -19,6 +19,7 @@ import { Circumstance } from '../../constats/entities/circumstance.entity';
 import { Damage } from '../../constats/entities/damage.entity';
 import { Observation } from '../../constats/entities/observation.entity';
 import { Signature } from '../../signature/entities/signature.entity';
+import { IsOptional, IsString } from 'class-validator';
 
 export enum UserRole {
   USER = 'USER',
