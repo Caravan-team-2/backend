@@ -45,7 +45,7 @@ export class User {
   username: string;
 
   @Column({ name: 'phone_number', unique: true, nullable: true })
-  @Field()
+  @Field({ nullable: true })
   phoneNumber: string;
 
   @Column()
@@ -80,6 +80,9 @@ export class User {
   @Column({ name: 'is_kyc_verified', default: false })
   @Field()
   isKycVerified: boolean;
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  job: string;
 
   @Column({ name: 'is_mail_verified', default: false })
   @Field()
