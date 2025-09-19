@@ -1,13 +1,5 @@
 import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  Relation,
-} from 'typeorm';
-import { Constat } from './constat.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum AttachmentType {
   PHOTO = 'PHOTO',
@@ -31,7 +23,6 @@ export class Attachment {
   @Field(() => ID)
   id: string;
 
- 
   @Column({ type: 'enum', enum: AttachmentType })
   @Field(() => AttachmentType)
   type: AttachmentType;
@@ -48,4 +39,3 @@ export class Attachment {
   @Field()
   url: string;
 }
-

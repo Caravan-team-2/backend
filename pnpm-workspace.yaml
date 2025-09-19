@@ -1,7 +1,0 @@
-onlyBuiltDependencies:
-  - '@apollo/protobufjs'
-  - '@nestjs/core'
-  - '@scarf/scarf'
-  - '@swc/core'
-  - bcrypt
-  - msgpackr-extract

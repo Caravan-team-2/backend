@@ -1,0 +1,97 @@
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+      }
+      h1 {
+        text-align: center;
+        color: #1a73e8;
+      }
+      .section {
+        margin: 15px 0;
+      }
+      .label {
+        font-weight: bold;
+      }
+      .drivers {
+        display: flex;
+        justify-content: space-between;
+      }
+      .box {
+        border: 1px solid #ddd;
+        padding: 8px;
+        width: 48%;
+      }
+      .sign {
+        margin-top: 10px;
+      }
+      img {
+        max-width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Constat Amiable d'Accident</h1>
+
+    <div class='drivers'>
+      <div class='box'>
+        <h3>Conducteur A</h3>
+        <p><span class='label'>Nom:</span> {{driverA.name}}</p>
+        <p><span class='label'>Permis:</span> {{driverA.license}}</p>
+        <p><span class='label'>Assurance:</span> {{driverA.insurance}}</p>
+        <p><span class='label'>Véhicule:</span>
+          {{driverA.vehicle.make}}
+          {{driverA.vehicle.model}}
+          ({{driverA.vehicle.plate}})</p>
+        {{#if driverA.signatureUrl}}
+          <div class='sign'><img
+              src='{{driverA.signatureUrl}}'
+              height='50'
+            /></div>
+        {{/if}}
+      </div>
+
+      <div class='box'>
+        <h3>Conducteur B</h3>
+        <p><span class='label'>Nom:</span> {{driverB.name}}</p>
+        <p><span class='label'>Permis:</span> {{driverB.license}}</p>
+        <p><span class='label'>Assurance:</span> {{driverB.insurance}}</p>
+        <p><span class='label'>Véhicule:</span>
+          {{driverB.vehicle.make}}
+          {{driverB.vehicle.model}}
+          ({{driverB.vehicle.plate}})</p>
+        {{#if driverB.signatureUrl}}
+          <div class='sign'><img
+              src='{{driverB.signatureUrl}}'
+              height='50'
+            /></div>
+        {{/if}}
+      </div>
+    </div>
+
+    <div class='section'>
+      <h3>Accident</h3>
+      <p><span class='label'>Date:</span> {{accident.date}}</p>
+      <p><span class='label'>Lieu:</span> {{accident.location}}</p>
+      <p><span class='label'>Description:</span> {{accident.description}}</p>
+      <p><span class='label'>Dégâts:</span>
+        {{#each accident.damages}}{{this}}{{#unless @last}},
+          {{/unless}}{{/each}}</p>
+      {{#if accident.diagramSvg}}
+        <div><span class='label'>Croquis:</span><br />
+          {{{accident.diagramSvg}}}</div>
+      {{/if}}
+    </div>
+
+    {{#if accident.photos}}
+      <div class='section'>
+        <h3>Photos</h3>
+        {{#each accident.photos}}
+          <img src='{{this}}' height='120' style='margin:5px' />
+        {{/each}}
+      </div>
+    {{/if}}
+  </body>
+</html>

@@ -25,6 +25,7 @@ import { VerificationModule } from './verification/verification.module';
 import { ConstatsModule } from './constats/constats.module';
 import { InsurranceCompanyModule } from './insurrance_company/insurrance_company.module';
 import { SignatureModule } from './signature/signature.module';
+import { PdfGeneratorModule } from './pdf-generator/pdf-generator.module';
 import databaseConfig from './config/database.config';
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import databaseConfig from './config/database.config';
     ConstatsModule,
     InsurranceCompanyModule,
     SignatureModule,
+    PdfGeneratorModule,
   ],
   controllers: [AppController],
   providers: [AppService],
