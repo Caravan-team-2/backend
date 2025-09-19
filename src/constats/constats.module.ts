@@ -9,6 +9,7 @@ import { Damage } from './entities/damage.entity';
 import { Observation } from './entities/observation.entity';
 import { Attachment } from './entities/attachment.entity';
 import { ConstatGateway } from './constats.gateway';
+import { ConstatGatewayDocsController } from './constats.controller';
 
 @Module({
   imports: [
@@ -22,5 +23,6 @@ import { ConstatGateway } from './constats.gateway';
     ]),
   ],
   providers: [ConstatsResolver, ConstatsService, ConstatGateway],
+  controllers: [ConstatGatewayDocsController],
 })
 export class ConstatsModule {}
