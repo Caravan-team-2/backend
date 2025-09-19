@@ -10,7 +10,7 @@ import {
   compareHash,
   generateHash,
 } from 'src/common/utils/authentication/bcrypt.utils';
-import { User } from 'src/user/entities/user.entity';
+import { User, UserRole } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { AuthResponseDto } from './dtos/responses/auth-response.dto';
 import { registerDto } from './dtos/requests/register.dto';
@@ -35,6 +35,13 @@ export class AuthenticationService {
     private readonly redisService: RedisService,
     @InjectQueue(QUEUE_NAME.MAIL) private readonly mailQueue: Queue,
   ) {}
+  async isSuperAdmin(id: string): Promise<boolean> {
+    const user = await this.userService.findById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user.role == UserRole.SUPER_ADMIN;
+  }
   async validateUser(email: string, password: string): Promise<User> {
     const user = await this.userService.findByEmail(email);
     if (!user) {
@@ -124,7 +131,7 @@ export class AuthenticationService {
       throw new BadRequestException('Invalid verification code');
     }
     user.isMailVerified = true;
-    await this.userService.updateUser(user);
+    await this.userService.updateUser(user, user.id);
     await this.redisService.del(`verification:${email}`);
     return {
       message: 'Email verified successfully.',
@@ -160,10 +167,20 @@ export class AuthenticationService {
       throw new NotFoundException('User not found');
     }
     user.password = await generateHash(password);
-    await this.userService.updateUser(user);
+    await this.userService.updateUser(user, user.id);
     await this.redisService.del(`password-reset:${token}`);
     return {
       message: 'Password reset successfully.',
     };
+  }
+  async isAssAdmin(id: string, companyId: string): Promise<boolean> {
+    const user = await this.userService.findById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (user.role == UserRole.ASSURER && user.insuranceCompanyId == companyId) {
+      return true;
+    }
+    return false;
   }
 }

@@ -19,8 +19,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      search:
-        condition: service_healthy
     volumes:
       - ./dist:/usr/src/app/dist
       - .:/usr/src/app
@@ -36,20 +34,6 @@ services:
       timeout: 5s
       retries: 5
 
-  search:
-    image: docker.elastic.co/elasticsearch/elasticsearch:9.0.2
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9200"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    environment:
-      - discovery.type=single-node
-      - ELASTIC_PASSWORD=portals
-      - xpack.security.enabled=false
-      - ES_JAVA_OPTS=-Xms1g -Xmx1g
-    ports:
-      - "9200:9200"
   db:
     image: postgres
     restart: always

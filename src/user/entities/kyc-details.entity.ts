@@ -1,5 +1,13 @@
 import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  Relation,
+} from 'typeorm';
+import { User } from './user.entity';
 
 export enum Sex {
   MALE = 'male',
@@ -25,6 +33,12 @@ export class KycDetails {
   @Field(() => ID)
   id: string;
 
+  @Column({ name: 'user_id', unique: true })
+  @Field()
+  userId: string;
+  @JoinColumn({ name: 'user_id' })
+  @OneToOne(() => User, (user) => user.kycDetails, { onDelete: 'CASCADE' })
+  user: Relation<User>;
   @Column({ unique: true })
   @Field()
   nin: number;

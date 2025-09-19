@@ -59,14 +59,15 @@ async function bootstrap() {
   //const { doubleCsrfProtection } = doubleCsrf(opts);
   //app.use(doubleCsrfProtection);
   //
-    // //PIPES
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      forbidUnknownValues: true,
-    }),
-  );
+    // //PIPES //TODO: turn this on 
+  // app.useGlobalPipes(
+  //   new ValidationPipe({
+  //     whitelist: true,
+  //     skipMissingProperties: true,
+  //     transform: true,
+  //     forbidUnknownValues: true,
+  //   }),
+  // );
 
   //FILTERS
   //app.useGlobalFilters(new HttpExceptionFilter());
