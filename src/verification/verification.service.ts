@@ -31,6 +31,7 @@ export class VerificationService {
     const { is_verified, ...userData } = res.data;
     if (is_verified) {
       await this.userService.markUserAsVerified(userId, userData);
+      return { isVerified: is_verified, ...userData };
     }
     throw new ConflictException('problem in validation try again');
   }
