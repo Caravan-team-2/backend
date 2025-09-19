@@ -7,11 +7,13 @@ export const USER = createParamDecorator(
     let user: AccessTokenPayload['user'];
 
     if (ctx.getType() === 'http') {
+      console.log('HTTP context detected');
       user = ctx.switchToHttp().getRequest().user;
     } else if (ctx.getType<any>() === 'graphql') {
       const gqlContext = GqlExecutionContext.create(ctx);
       user = gqlContext.getContext().req.user;
     }
+    
     else {
       throw new Error('Unsupported context type');
     }

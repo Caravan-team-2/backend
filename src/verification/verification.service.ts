@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import { isAxiosError } from '@nestjs/terminus/dist/utils';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Attachment } from 'src/constats/entities/attachment.entity';
 import { KycDetails } from 'src/user/entities/kyc-details.entity';
@@ -12,6 +13,7 @@ class AiRes extends KycDetails {
 
 @Injectable()
 export class VerificationService {
+  logger = new Logger(VerificationService.name);
   constructor(
     @InjectRepository(Attachment)
     private readonly attachmentRepo: Repository<Attachment>,
@@ -22,17 +24,35 @@ export class VerificationService {
     return await this.attachmentRepo.findOneByOrFail({ id: documentId });
   }
   async verifyIdentityDocument(documentId: string, userId: string) {
-    const attachment = await this.findOne(documentId);
-    const url = 'https://6e0429bfcd42.ngrok-free.app/ocr/extract'; //NOTE: chgange it later
-    const res = await this.httpService.axiosRef.post<AiRes>(url, {
-      url: attachment.url,
-    });
+    try {
+      const attachment = await this.findOne(documentId);
+      if (!attachment) {
+        throw new ConflictException('Document not found');
+      }
+      if (!attachment.url) {
+        throw new ConflictException('Document url not found');
+      }
+      const url = 'ocr/extract'; //NOTE: chgange it later
 
-    const { is_verified, ...userData } = res.data;
-    if (is_verified) {
-      await this.userService.markUserAsVerified(userId, userData);
-      return { isVerified: is_verified, ...userData };
+      const res = await this.httpService.axiosRef.get<AiRes>(url, {
+        params: { image_url: attachment.url },
+      });
+
+      const { is_verified, ...userData } = res.data;
+      if (is_verified) {
+        await this.userService.markUserAsVerified(userId, userData);
+        return { isVerified: is_verified, ...userData };
+      }
+      throw new ConflictException('Document not verified');
+    } catch (error) {
+  
+      if (isAxiosError(error)) {
+        this.logger.error(`Axios error details: ${JSON.stringify(error)}`);
+
+      throw new ConflictException('problem in validation try again');
+      }
+      throw error;
+
     }
-    throw new ConflictException('problem in validation try again');
   }
 }
