@@ -23,7 +23,7 @@ export class VerificationService {
   }
   async verifyIdentityDocument(documentId: string, userId: string) {
     const attachment = await this.findOne(documentId);
-    const url = 'https://6e0429bfcd42.ngrok-free.app/ocr/extract';
+    const url = 'https://6e0429bfcd42.ngrok-free.app/ocr/extract'; //NOTE: chgange it later
     const res = await this.httpService.axiosRef.post<AiRes>(url, {
       url: attachment.url,
     });
