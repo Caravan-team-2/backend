@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Constat } from './constat.entity';
 import { Vehicle } from '../../user/entities/vehicle.entity';
-import { InsuranceCompany } from '../../insurrance_company/entities/insurance-company.entity';
+import { InsuranceCompany } from 'src/insurrance_company/entities/insurance-company.entity';
 
 export enum DriverRole {
   A = 'A',
