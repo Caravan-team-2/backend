@@ -9,6 +9,7 @@ import { UpdateUserInputType } from './dtos/update-user.input-type';
 import { NotFoundError } from 'rxjs';
 import { UserInsurance } from 'src/insurrance_company/entities/user-insurance.entity';
 import { KycDetails } from './entities/kyc-details.entity';
+import { InsurranceCompanyService } from 'src/insurrance_company/insurrance_company.service';
 @UseGuards(AcessTokenGuard)
 @Injectable()
 export class UserService {
@@ -20,7 +21,8 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(UserInsurance)
     private readonly userInsuranceRepository: Repository<UserInsurance>,
-    @InjectRepository(KycDetails) private readonly kycDetailsRepository: Repository<KycDetails>,
+    @InjectRepository(KycDetails)
+    private readonly kycDetailsRepository: Repository<KycDetails>,
   ) {}
   async createUser(data: registerDto): Promise<User> {
     const hashedPassword = await generateHash(data.password);
@@ -30,12 +32,17 @@ export class UserService {
       isMailVerified: false,
     });
     return this.userRepository.save(newUser);
-  }
-  findByEmail(email: string): Promise<User | null> {
+  } 
+   findByEmail(email: string): Promise<User | null> {
     return this.userRepository.findOne({ where: { email } });
   }
   findById(id: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { id } });
+    return this.userRepository.findOne({
+      where: { id },
+      relations: {
+        insuranceCompany: true,
+      },
+    });
   }
 
   async updateUser(user: UpdateUserInputType, userId: string): Promise<User> {
