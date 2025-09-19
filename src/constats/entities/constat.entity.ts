@@ -15,7 +15,6 @@ import { Circumstance } from './circumstance.entity';
 import { Damage } from './damage.entity';
 import { Observation } from './observation.entity';
 import { Signature } from '../../signature/entities/signature.entity';
-import { Attachment } from './attachment.entity';
 
 @ObjectType()
 @Entity('constats')
@@ -78,4 +77,3 @@ export class Constat {
   @Field(() => [Signature], { nullable: 'itemsAndList' })
   signatures: Relation<Signature[]>;
 }
-

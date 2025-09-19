@@ -1,8 +1,8 @@
 import { Resolver, Mutation, Args } from '@nestjs/graphql';
 import { VerificationService } from './verification.service';
 import { VerifyIdentityOutput } from './dtos/outputs/verify-identity.output';
-import { VerifyIdentityInput } from './inputs/verify-identity';
 import { USER } from 'src/authentication/decorators/user.decorator';
+import { VerifyIdentityInput } from './dtos/inputs/verify-identity';
 
 @Resolver()
 export class VerificationResolver {
