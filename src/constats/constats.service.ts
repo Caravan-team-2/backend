@@ -19,4 +19,6 @@ export class ConstatsService {
     });
     return new PaginatedConstats(data, total, page, limit);
   }
+
+  async createSesion() {}
 }

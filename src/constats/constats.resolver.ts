@@ -6,7 +6,7 @@ import { PaginationInput } from 'src/common/dtos/paginationInput.dto';
 import { USER } from 'src/authentication/decorators/user.decorator';
 
 @Resolver(() => Constat)
-export class ConstatResolver {
+export class ConstatsResolver {
   constructor(private readonly constatService: ConstatsService) {}
 
   @Query(() => PaginatedConstats, {
