@@ -27,9 +27,11 @@ import { InsurranceCompanyModule } from './insurrance_company/insurrance_company
 import { SignatureModule } from './signature/signature.module';
 import { PdfGeneratorModule } from './pdf-generator/pdf-generator.module';
 import databaseConfig from './config/database.config';
+import { Attachment } from './constats/entities/attachment.entity';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync(databaseConfig.asProvider()),
+    TypeOrmModule.forFeature([Attachment]),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       path: '/graphql',
       playground: true,

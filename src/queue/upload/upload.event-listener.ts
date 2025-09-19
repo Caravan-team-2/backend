@@ -3,46 +3,69 @@ import {
   QueueEventsHost,
   QueueEventsListener,
 } from '@nestjs/bullmq';
+import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UploadApiResponse } from 'cloudinary';
 import { QUEUE_NAME } from 'src/common/constants/queues';
-import { Attachment } from 'src/constats/entities/attachment.entity';
+import { Attachment, AttachmentStatus } from 'src/constats/entities/attachment.entity';
 import { Repository } from 'typeorm';
 
 @QueueEventsListener(QUEUE_NAME.UPLOAD)
-export class UploadEventListener extends QueueEventsHost {
+export class AttachmentEventListener extends QueueEventsHost {
+  logger = new Logger(AttachmentEventListener.name);
   constructor(
-    @InjectRepository(Attachment) private readonly attachmentRepo: Repository<Attachment>,
+    @InjectRepository(Attachment)
+    private readonly attachmentRepo: Repository<Attachment>,
   ) {
     super();
   }
   @OnQueueEvent('completed')
-  onCompleted({
+  async onCompleted({
     jobId,
     returnvalue,
   }: {
-    jobId: number | string;
+    jobId: string;
     returnvalue: UploadApiResponse;
   }) {
-    console.log(
-      `Job with ID ${jobId} has completed. Return value:`,
-      returnvalue.secure_url,
+    this.logger.log(`Job with ID ${jobId} has been completed.`);
+    //Mark upload as completed in DB
+    await this.attachmentRepo.update(
+      { jobId },
+      {
+        status: AttachmentStatus.VALIDATED,
+        url: returnvalue.secure_url,
+      },
     );
-
   }
+  @OnQueueEvent('added')
+  async onAdded({ jobId }: { jobId: string }) {
+    this.logger.log(`Job with ID ${jobId} has been added to the queue.`);
 
+    await this.attachmentRepo.update(
+      { jobId },
+      {
+        status: AttachmentStatus.UPLOADING,
+      },
+    );
+  }
   @OnQueueEvent('failed')
-  onFailed({
+  async onFailed({
     jobId,
     failedReason,
   }: {
-    jobId: number | string;
+    jobId: string;
     failedReason: string;
   }) {
-    console.error(`Job with ID ${jobId} has failed. Reason: ${failedReason}`);
-  }
-  @OnQueueEvent('active')
-  onActive({ jobId, prev }: { jobId: number | string; prev: string }) {
-    console.log(`Job with ID ${jobId} is now active. Previous status: ${prev}`);
+    //Mark upload as failed in DB
+    this.logger.error(
+      `Job with ID ${jobId} has failed. Reason: ${failedReason}`,
+    );
+    await this.attachmentRepo.update(
+      { jobId },
+      {
+        status:AttachmentStatus.REJECTED,
+        errorMessage: failedReason,
+      },
+    );
   }
 }

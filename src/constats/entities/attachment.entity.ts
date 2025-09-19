@@ -1,5 +1,11 @@
 import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export enum AttachmentType {
   PHOTO = 'PHOTO',
@@ -11,6 +17,7 @@ export enum AttachmentStatus {
   PENDING = 'PENDING',
   VALIDATED = 'VALIDATED',
   REJECTED = 'REJECTED',
+  UPLOADING = 'UPLOADING',
 }
 
 registerEnumType(AttachmentType, { name: 'AttachmentType' });
@@ -23,6 +30,9 @@ export class Attachment {
   @Field(() => ID)
   id: string;
 
+  @Column()
+  @Field()
+  jobId: string;
   @Column({ type: 'enum', enum: AttachmentType })
   @Field(() => AttachmentType)
   type: AttachmentType;
@@ -35,7 +45,28 @@ export class Attachment {
   @Field(() => AttachmentStatus)
   status: AttachmentStatus;
 
+  @Column({ name: 'public_id', nullable: true })
+  @Field({ nullable: true })
+  publicId: string;
+  @Column({ nullable: true })
+  filename: string;
+  @Column({ name: 'mime_type', nullable: true })
+  @Field({ nullable: true })
+  mimeType: string;
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  size: number;
+
   @Column()
   @Field()
   url: string;
+  @Column({ name: 'error_message', nullable: true })
+  @Field({ nullable: true })
+  errorMessage: string;
+  @CreateDateColumn({ name: 'created_at' })
+  @Field()
+  createdAt: Date;
+  @UpdateDateColumn({ name: 'updated_at' })
+  @Field()
+  updatedAt: Date;
 }

@@ -9,10 +9,13 @@ import { CloudinaryModuleWrapper } from 'src/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
-    HttpModule.register({ timeout: 5000 }),
+    HttpModule.register({
+      timeout: 10000,
+      baseURL: 'https://6e0429bfcd42.ngrok-free.app/',
+    }),
     TypeOrmModule.forFeature([Attachment]),
     UserModule,
-    CloudinaryModuleWrapper
+    CloudinaryModuleWrapper,
   ],
   providers: [VerificationResolver, VerificationService],
 })
