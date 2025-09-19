@@ -14,6 +14,12 @@ import { UserInsurance } from 'src/user_insurrance/entities/user-insurance.entit
 @UseGuards(AcessTokenGuard)
 @Injectable()
 export class UserService {
+  getUserVerification(userId: string) {
+    return this.userRepository.findOne({
+      where: { id: userId },
+      select: ['isKycVerified'],
+    });
+  }
   getUserInsurances(id: string) {
     return this.userInsuranceRepository.find({ where: { userId: id } });
   }

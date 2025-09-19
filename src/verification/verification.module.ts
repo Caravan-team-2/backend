@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Attachment } from 'src/constats/entities/attachment.entity';
 import { UserModule } from 'src/user/user.module';
 import { CloudinaryModuleWrapper } from 'src/cloudinary/cloudinary.module';
+import { verificationGuard } from './guards/verification.guard';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CloudinaryModuleWrapper } from 'src/cloudinary/cloudinary.module';
     UserModule,
     CloudinaryModuleWrapper,
   ],
-  providers: [VerificationResolver, VerificationService],
+  providers: [VerificationResolver, VerificationService,verificationGuard],
+  exports: [VerificationService],
 })
 export class VerificationModule {}
