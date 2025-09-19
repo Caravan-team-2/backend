@@ -7,7 +7,7 @@ import { KycDetails } from './entities/kyc-details.entity';
 import { Vehicle } from './entities/vehicle.entity';
 import { AuthenticationModule } from 'src/authentication/authentication.module';
 import { UpdateUserInputType } from './dtos/update-user.input-type';
-import { UserInsurance } from 'src/insurrance_company/entities/user-insurance.entity';
+import { UserInsurance } from 'src/user_insurrance/entities/user-insurance.entity';
 
 @Module({
   imports: [

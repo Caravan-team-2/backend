@@ -8,9 +8,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AcessTokenGuard } from 'src/authentication/guards/access-token.guard';
 import { UpdateUserInputType } from './dtos/update-user.input-type';
 import { NotFoundError } from 'rxjs';
-import { UserInsurance } from 'src/insurrance_company/entities/user-insurance.entity';
 import { KycDetails } from './entities/kyc-details.entity';
 import { InsurranceCompanyService } from 'src/insurrance_company/insurrance_company.service';
+import { UserInsurance } from 'src/user_insurrance/entities/user-insurance.entity';
 @UseGuards(AcessTokenGuard)
 @Injectable()
 export class UserService {

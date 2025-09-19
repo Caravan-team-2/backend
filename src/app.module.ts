@@ -28,6 +28,7 @@ import { SignatureModule } from './signature/signature.module';
 import { PdfGeneratorModule } from './pdf-generator/pdf-generator.module';
 import databaseConfig from './config/database.config';
 import { Attachment } from './constats/entities/attachment.entity';
+import { UserInsurranceModule } from './user_insurrance/user_insurrance.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync(databaseConfig.asProvider()),
@@ -68,6 +69,7 @@ import { Attachment } from './constats/entities/attachment.entity';
     InsurranceCompanyModule,
     SignatureModule,
     PdfGeneratorModule,
+    UserInsurranceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
