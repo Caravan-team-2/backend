@@ -1,5 +1,12 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { IsDate, IsInt, IsNotEmpty, IsString, Min, ValidateNested } from 'class-validator';
+import {
+  IsDate,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateConstatVehicleInput } from './create-constat-vehicle.input';
 import { CreateCircumstanceInput } from './create-circumstance.input';
@@ -75,3 +82,4 @@ export class CreateConstatInput {
   @Type(() => CreateSignatureInput)
   signaturesB: CreateSignatureInput[];
 }
+

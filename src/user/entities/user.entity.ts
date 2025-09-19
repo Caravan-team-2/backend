@@ -97,7 +97,7 @@ export class User {
   @Field()
   updatedAt: Date;
 
-  @OneToMany(() => UserInsurance, (userInsurance) => userInsurance.user)
+  @OneToMany(() => UserInsurance, (userInsurance) => userInsurance.user, { cascade: true })
   @Field(() => [UserInsurance], { nullable: 'itemsAndList' })
   insurances: Relation<UserInsurance[]>;
 

@@ -28,6 +28,7 @@ import { SignatureModule } from './signature/signature.module';
 import { PdfGeneratorModule } from './pdf-generator/pdf-generator.module';
 import databaseConfig from './config/database.config';
 import { Attachment } from './constats/entities/attachment.entity';
+import { PaymentModule } from './payment/payment.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync(databaseConfig.asProvider()),
@@ -56,7 +57,7 @@ import { Attachment } from './constats/entities/attachment.entity';
       cache: true,
       isGlobal: true, // Makes the configuration available globally
       validationSchema: null, // You can define a Joi schema here for validation if needed
-      load: [mailConfig, redisConfig, authConfig, appConfig,cloudConfig],
+      load: [mailConfig, redisConfig, authConfig, appConfig, cloudConfig],
     }),
     AuthenticationModule,
     UserModule,
@@ -68,6 +69,7 @@ import { Attachment } from './constats/entities/attachment.entity';
     InsurranceCompanyModule,
     SignatureModule,
     PdfGeneratorModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
