@@ -24,7 +24,6 @@ export class UserService {
     private readonly userInsuranceRepository: Repository<UserInsurance>,
     @InjectRepository(KycDetails)
     private readonly kycDetailsRepository: Repository<KycDetails>,
-    private readonly cloudinaryService: CloudinaryService,
   ) {}
   async createUser(data: registerDto): Promise<User> {
     const hashedPassword = await generateHash(data.password);

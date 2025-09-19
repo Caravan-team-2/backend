@@ -26,13 +26,15 @@ export enum LicenseType {
 registerEnumType(Sex, { name: 'Sex' });
 registerEnumType(LicenseType, { name: 'LicenseType' });
 
+@Entity('kyc_details')
 @ObjectType()
 export class KycDetails {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
   id: string;
 
-  @Column({ name: 'user_id', unique: true })
+  //TODO change
+  @Column({ name: 'user_id', unique: true ,nullable:true})
   @Field()
   userId: string;
   @JoinColumn({ name: 'user_id' })

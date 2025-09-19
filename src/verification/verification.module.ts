@@ -2,9 +2,18 @@ import { Module } from '@nestjs/common';
 import { VerificationService } from './verification.service';
 import { VerificationResolver } from './verification.resolver';
 import { HttpModule } from '@nestjs/axios';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Attachment } from 'src/constats/entities/attachment.entity';
+import { UserModule } from 'src/user/user.module';
+import { CloudinaryModuleWrapper } from 'src/cloudinary/cloudinary.module';
 
 @Module({
-  imports: [HttpModule.register({ timeout: 5000 })],
+  imports: [
+    HttpModule.register({ timeout: 5000 }),
+    TypeOrmModule.forFeature([Attachment]),
+    UserModule,
+    CloudinaryModuleWrapper
+  ],
   providers: [VerificationResolver, VerificationService],
 })
 export class VerificationModule {}
