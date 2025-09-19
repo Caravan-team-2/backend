@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, UseGuards } from '@nestjs/common';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { User } from './entities/user.entity';
 import { registerDto } from 'src/authentication/dtos/requests/register.dto';
 import { Repository } from 'typeorm';
@@ -23,6 +24,7 @@ export class UserService {
     private readonly userInsuranceRepository: Repository<UserInsurance>,
     @InjectRepository(KycDetails)
     private readonly kycDetailsRepository: Repository<KycDetails>,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
   async createUser(data: registerDto): Promise<User> {
     const hashedPassword = await generateHash(data.password);
@@ -81,5 +83,28 @@ export class UserService {
   }
   deleteUser(id: string) {
     return this.userRepository.delete(id);
+  }
+  async updateKycDetails(
+    userId: number,
+    kycDetails: Partial<KycDetails>,
+  ): Promise<KycDetails> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId.toString() },
+      relations: ['kycDetails'],
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.kycDetails) {
+      Object.assign(user.kycDetails, kycDetails);
+      return this.kycDetailsRepository.save(user.kycDetails);
+    } else {
+      const newKycDetails = this.kycDetailsRepository.create({
+        ...kycDetails,
+        user,
+      });
+      return this.kycDetailsRepository.save(newKycDetails);
+    }
   }
 }
