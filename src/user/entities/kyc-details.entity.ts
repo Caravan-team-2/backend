@@ -27,7 +27,6 @@ registerEnumType(Sex, { name: 'Sex' });
 registerEnumType(LicenseType, { name: 'LicenseType' });
 
 @ObjectType()
-@Entity('kyc_details')
 export class KycDetails {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
