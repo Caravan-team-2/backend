@@ -23,6 +23,13 @@ export class VerificationService {
   async findOne(documentId: string) {
     return await this.attachmentRepo.findOneByOrFail({ id: documentId });
   }
+  async isUserVerified(userId: string) {
+    const userVerification=await this.userService.getUserVerification(userId);
+    if (!userVerification) {
+      throw new ConflictException('User verification not found');
+    }
+    return userVerification?.isKycVerified;
+  }
   async verifyIdentityDocument(documentId: string, userId: string) {
     try {
       const attachment = await this.findOne(documentId);

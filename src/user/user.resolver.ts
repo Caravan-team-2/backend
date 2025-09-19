@@ -13,9 +13,7 @@ import { UseGuards } from '@nestjs/common';
 import { AcessTokenGuard } from 'src/authentication/guards/access-token.guard';
 import { UpdateUserInputType } from './dtos/update-user.input-type';
 import { KycDetails } from './entities/kyc-details.entity';
-import { Vehicle } from './entities/vehicle.entity';
-import { UserInsurance } from 'src/insurrance_company/entities/user-insurance.entity';
-import { InsuranceCompany } from 'src/insurrance_company/entities/insurance-company.entity';
+import { UserInsurance } from 'src/user_insurrance/entities/user-insurance.entity';
 
 @UseGuards(AcessTokenGuard)
 @Resolver(User)

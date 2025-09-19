@@ -9,7 +9,7 @@ import {
   Relation,
 } from 'typeorm';
 import { ConstatVehicle } from '../../constats/entities/constat-vehicle.entity';
-import { UserInsurance } from 'src/insurrance_company/entities/user-insurance.entity';
+import { UserInsurance } from 'src/user_insurrance/entities/user-insurance.entity';
 
 @ObjectType()
 @Entity('vehicles')

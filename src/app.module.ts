@@ -29,6 +29,7 @@ import { PdfGeneratorModule } from './pdf-generator/pdf-generator.module';
 import databaseConfig from './config/database.config';
 import { Attachment } from './constats/entities/attachment.entity';
 import { PaymentModule } from './payment/payment.module';
+import { UserInsurranceModule } from './user_insurrance/user_insurrance.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync(databaseConfig.asProvider()),
@@ -70,6 +71,7 @@ import { PaymentModule } from './payment/payment.module';
     SignatureModule,
     PdfGeneratorModule,
     PaymentModule,
+    UserInsurranceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -12,14 +12,13 @@ import {
   Relation,
 } from 'typeorm';
 import { KycDetails } from './kyc-details.entity';
-import { InsuranceCompany } from '../../insurrance_company/entities/insurance-company.entity';
-import { UserInsurance } from '../../insurrance_company/entities/user-insurance.entity';
 import { Constat } from '../../constats/entities/constat.entity';
 import { Circumstance } from '../../constats/entities/circumstance.entity';
 import { Damage } from '../../constats/entities/damage.entity';
 import { Observation } from '../../constats/entities/observation.entity';
 import { Signature } from '../../signature/entities/signature.entity';
-import { IsOptional, IsString } from 'class-validator';
+import { UserInsurance } from 'src/user_insurrance/entities/user-insurance.entity';
+import { InsuranceCompany } from 'src/insurrance_company/entities/insurance-company.entity';
 
 export enum UserRole {
   USER = 'USER',
@@ -37,8 +36,7 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
   id: string;
-  @Field()
-  @Column()
+  @Field() @Column()
   email: string;
 
   @Column({ unique: true })
