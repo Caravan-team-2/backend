@@ -32,8 +32,26 @@ export class UserService {
       isMailVerified: false,
     });
     return this.userRepository.save(newUser);
-  } 
-   findByEmail(email: string): Promise<User | null> {
+  }
+  async markUserAsVerified(userId: string, details: KycDetails): Promise<User> {
+    //TODO: put this in a transaction
+    const res = await this.userRepository.update(userId, {
+      isKycVerified: true,
+      kycDetails: details,
+    });
+    if (!res.affected || res.affected === 0) {
+      throw new NotFoundException('User not found');
+    }
+    const updatedUser = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: { kycDetails: true },
+    });
+    if (!updatedUser) {
+      throw new NotFoundException('User not found after update');
+    }
+    return updatedUser;
+  }
+  findByEmail(email: string): Promise<User | null> {
     return this.userRepository.findOne({ where: { email } });
   }
   findById(id: string): Promise<User | null> {
