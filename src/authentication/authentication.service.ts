@@ -87,7 +87,7 @@ export class AuthenticationService {
   }
   async registerUser(data: registerDto) {
     const user = await this.userService.createUser(data);
-    await this.sendVerificationCode(user);
+    // await this.sendVerificationCode(user);
     return {
       message:
         'User registered successfully. Please check your email for verification code.',
@@ -104,10 +104,10 @@ export class AuthenticationService {
 
   async sendVerificationCode(user: User) {
     const otp = await this.generateAndSetOtp(user);
-    await this.mailQueue.add(MAIL_JOBS.SEND_VERIFICATION_MAIL, {
-      to: user.email,
-      code: otp,
-    });
+    // await this.mailQueue.add(MAIL_JOBS.SEND_VERIFICATION_MAIL, {
+    //   to: user.email,
+    //   code: otp,
+    // });
   }
 
   async resendVerificationCode(email: string) {
