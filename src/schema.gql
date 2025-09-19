@@ -1,0 +1,319 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type KycDetails {
+  id: ID!
+  userId: String!
+  nin: Float!
+  firstName: String!
+  lastName: String!
+  dob: DateTime!
+  sex: Sex!
+  placeOfBirth: String!
+  issuedAt: DateTime!
+  expiresAt: DateTime!
+  licenseType: LicenseType!
+  licenseNumber: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum Sex {
+  MALE
+  FEMALE
+}
+
+enum LicenseType {
+  A
+  B
+  C
+  D
+  E
+  F
+}
+
+type InsuranceCompany {
+  id: ID!
+  companyName: String!
+  logoId: String
+  integrationId: String
+  constatVehicle: [ConstatVehicle]
+  users: [User]
+  userInsurances: [UserInsurance]
+}
+
+type UserInsurance {
+  id: ID!
+  userId: String!
+  carId: String!
+  vehicle: Vehicle!
+  user: User!
+  insuranceNumber: String!
+  companyId: String!
+  company: InsuranceCompany!
+  validFrom: DateTime!
+  validTo: DateTime!
+}
+
+type Vehicle {
+  id: ID!
+  insurranceId: String!
+  insurrance: UserInsurance!
+  registrationNumber: String!
+  make: String!
+  model: String!
+  type: String!
+  constatVehicles: [ConstatVehicle]
+}
+
+type ConstatVehicle {
+  id: ID!
+  constatId: String!
+  constat: Constat!
+  vehicleId: String!
+  vehicle: Vehicle!
+  driverRole: DriverRole!
+  insurerId: String!
+  insurer: InsuranceCompany!
+  insuranceNumber: String!
+  licenseNumber: String!
+}
+
+enum DriverRole {
+  A
+  B
+}
+
+type Circumstance {
+  id: ID!
+  constatId: String!
+  constat: Constat!
+  driverId: String!
+  driver: User!
+  code: Float!
+}
+
+type Damage {
+  id: ID!
+  constatId: String!
+  constat: Constat!
+  driverId: String!
+  driver: User!
+  description: String!
+}
+
+type Observation {
+  id: ID!
+  constatId: String!
+  constat: Constat!
+  driverId: String!
+  driver: User!
+  note: String!
+}
+
+type Signature {
+  id: ID!
+  constatId: String!
+  constat: Constat!
+  driverId: String!
+  driver: User!
+  signatureType: SignatureType!
+  signatureData: String!
+  createdAt: DateTime!
+}
+
+enum SignatureType {
+  VISUAL
+  CRYPTO
+}
+
+type Constat {
+  id: ID!
+  driverAId: String!
+  driverA: User!
+  driverBId: String!
+  driverB: User!
+  dateTime: DateTime!
+  location: String!
+  injuredCount: Float!
+  createdAt: DateTime!
+  constatVehicles: [ConstatVehicle]
+  circumstances: [Circumstance]
+  damages: [Damage]
+  observations: [Observation]
+  signatures: [Signature]
+}
+
+type User {
+  id: ID!
+  email: String!
+  username: String!
+  phoneNumber: String
+  role: UserRole!
+  kycId: String
+  kycDetails: KycDetails
+  insuranceCompanyId: String
+  insuranceCompany: InsuranceCompany
+  isKycVerified: Boolean!
+  job: String
+  isMailVerified: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  insurances: [UserInsurance]
+  constatsAsDriverA: [Constat]
+  constatsAsDriverB: [Constat]
+  circumstances: [Circumstance]
+  damages: [Damage]
+  observations: [Observation]
+  signatures: [Signature]
+}
+
+enum UserRole {
+  USER
+  ASSURER
+  SUPER_ADMIN
+}
+
+type VerifyIdentityOutput {
+  id: ID!
+  userId: String!
+  nin: Float!
+  firstName: String!
+  lastName: String!
+  dob: DateTime!
+  sex: Sex!
+  placeOfBirth: String!
+  issuedAt: DateTime!
+  expiresAt: DateTime!
+  licenseType: LicenseType!
+  licenseNumber: String!
+  isVerified: Boolean!
+}
+
+type PaginationMeta {
+  """Total number of items"""
+  total: Int!
+
+  """Current page number"""
+  page: Int!
+
+  """Number of items per page"""
+  limit: Int!
+
+  """Total number of pages"""
+  totalPages: Int!
+}
+
+type PaginatedConstats {
+  """Pagination metadata"""
+  meta: PaginationMeta!
+
+  """List of items"""
+  data: [Constat!]!
+}
+
+type ConstatStatusOutput {
+  status: ConstatStatus!
+  message: String
+}
+
+enum ConstatStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  REJECTED
+}
+
+type Query {
+  me: User!
+
+  """Get all constats of the current user"""
+  getConstats(pagination: PaginationInput!): PaginatedConstats!
+
+  """Check the status of a constat by vehicle IDs"""
+  checkStatusByVehicleIds(vehicleAId: String!, vehicleBId: String!): ConstatStatusOutput!
+  findOne(companyId: ID!): InsuranceCompany!
+  findAll: [InsuranceCompany!]!
+  usersInsurrances: [UserInsurance!]!
+  userInsurrance: UserInsurance!
+}
+
+input PaginationInput {
+  """Page number (min: 1)"""
+  page: Int = 1
+
+  """Items per page (1–100)"""
+  limit: Int = 10
+}
+
+type Mutation {
+  updateMe(user: UpdateUserInputType!): User!
+  deleteMe: Boolean!
+
+  """Verify identity document using AI (OCR + KYC)."""
+  verifyIdentity(input: VerifyIdentityInput!): VerifyIdentityOutput!
+  createConstat(createConstatInput: CreateConstatInput!): Constat!
+  addInsurranceCompany(companyId: String!): InsuranceCompany!
+  updateUserInsurrance(updateUserInsurranceInput: UpdateUserInsurranceInput!): UserInsurance!
+}
+
+input UpdateUserInputType {
+  username: String
+  phoneNumber: String
+  job: String
+}
+
+input VerifyIdentityInput {
+  documentId: String!
+}
+
+input CreateConstatInput {
+  driverBId: String!
+  dateTime: DateTime!
+  location: String!
+  injuredCount: Int!
+  constatVehicles: [CreateConstatVehicleInput!]!
+  circumstancesA: [CreateCircumstanceInput!]!
+  circumstancesB: [CreateCircumstanceInput!]!
+  damagesA: [CreateDamageInput!]!
+  damagesB: [CreateDamageInput!]!
+  observationsA: [CreateObservationInput!]!
+  observationsB: [CreateObservationInput!]!
+  signaturesA: [CreateSignatureInput!]!
+  signaturesB: [CreateSignatureInput!]!
+}
+
+input CreateConstatVehicleInput {
+  vehicleId: String!
+  driverRole: DriverRole!
+  insurerId: String!
+  insuranceNumber: String!
+  licenseNumber: String!
+}
+
+input CreateCircumstanceInput {
+  code: Int!
+}
+
+input CreateDamageInput {
+  description: String!
+}
+
+input CreateObservationInput {
+  note: String!
+}
+
+input CreateSignatureInput {
+  signatureType: SignatureType!
+  signatureData: String!
+}
+
+input UpdateUserInsurranceInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}

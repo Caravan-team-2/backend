@@ -36,7 +36,8 @@ export class UserService {
     const newUser = this.userRepository.create({
       ...data,
       password: hashedPassword,
-      isMailVerified: false,
+      //NOTE: this is only bypassed on dev envirenoment
+      isMailVerified: true,
     });
     return this.userRepository.save(newUser);
   }
