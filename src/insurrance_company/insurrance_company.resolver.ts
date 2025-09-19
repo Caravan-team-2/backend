@@ -1,4 +1,11 @@
-import { Args, ID, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  ID,
+  Mutation,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { InsurranceCompanyService } from './insurrance_company.service';
 import { UseGuards } from '@nestjs/common';
 import { AcessTokenGuard } from 'src/authentication/guards/access-token.guard';
@@ -21,5 +28,9 @@ export class InsurranceCompanyResolver {
   @Query(() => [InsuranceCompany])
   findAll() {
     return this.insurranceCompanyService.findAll();
+  }
+  @Mutation(() => InsuranceCompany)
+  addInsurranceCompany(@Args('companyId') companyName: string) {
+    return this.insurranceCompanyService.create(companyName);
   }
 }

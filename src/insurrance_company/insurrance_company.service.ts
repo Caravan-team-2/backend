@@ -20,5 +20,8 @@ export class InsurranceCompanyService {
   delete(id: string) {
     return this.insuranceCompanyRepo.delete({ id });
   }
-
+  create(name: string) {
+    const newCompany = this.insuranceCompanyRepo.create({ companyName: name });
+    return this.insuranceCompanyRepo.save(newCompany);
+  }
 }
