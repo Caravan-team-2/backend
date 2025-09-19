@@ -57,23 +57,31 @@ export class Constat {
   @Field()
   createdAt: Date;
 
-  @OneToMany(() => ConstatVehicle, (constatVehicle) => constatVehicle.constat)
+  @OneToMany(() => ConstatVehicle, (constatVehicle) => constatVehicle.constat, {
+    cascade: true,
+  })
   @Field(() => [ConstatVehicle], { nullable: 'itemsAndList' })
   constatVehicles: Relation<ConstatVehicle[]>;
 
-  @OneToMany(() => Circumstance, (circumstance) => circumstance.constat)
+  @OneToMany(() => Circumstance, (circumstance) => circumstance.constat, {
+    cascade: true,
+  })
   @Field(() => [Circumstance], { nullable: 'itemsAndList' })
   circumstances: Relation<Circumstance[]>;
 
-  @OneToMany(() => Damage, (damage) => damage.constat)
+  @OneToMany(() => Damage, (damage) => damage.constat, { cascade: true })
   @Field(() => [Damage], { nullable: 'itemsAndList' })
   damages: Relation<Damage[]>;
 
-  @OneToMany(() => Observation, (observation) => observation.constat)
+  @OneToMany(() => Observation, (observation) => observation.constat, {
+    cascade: true,
+  })
   @Field(() => [Observation], { nullable: 'itemsAndList' })
   observations: Relation<Observation[]>;
 
-  @OneToMany(() => Signature, (signature) => signature.constat)
+  @OneToMany(() => Signature, (signature) => signature.constat, {
+    cascade: true,
+  })
   @Field(() => [Signature], { nullable: 'itemsAndList' })
   signatures: Relation<Signature[]>;
 }
