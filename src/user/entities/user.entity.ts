@@ -36,12 +36,9 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
   id: string;
-  @Field() @Column()
-  email: string;
-
-  @Column({ unique: true })
   @Field()
-  username: string;
+  @Column()
+  email: string;
 
   @Column({ name: 'phone_number', unique: true, nullable: true })
   @Field({ nullable: true })
@@ -95,7 +92,9 @@ export class User {
   @Field()
   updatedAt: Date;
 
-  @OneToMany(() => UserInsurance, (userInsurance) => userInsurance.user, { cascade: true })
+  @OneToMany(() => UserInsurance, (userInsurance) => userInsurance.user, {
+    cascade: true,
+  })
   @Field(() => [UserInsurance], { nullable: 'itemsAndList' })
   insurances: Relation<UserInsurance[]>;
 

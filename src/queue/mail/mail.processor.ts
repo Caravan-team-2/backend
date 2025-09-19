@@ -49,6 +49,7 @@ export class MailProcessor extends WorkerHost {
     job: Job<SendPasswordResetMailDto>,
   ): Promise<void> {
     const { to, token } = job.data;
+
     return this.mailService.sendPasswordResetEmail(to, token);
   }
 }

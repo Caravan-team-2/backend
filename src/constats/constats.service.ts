@@ -1,14 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationInput } from 'src/common/dtos/paginationInput.dto';
-import { Constat } from './entities/constat.entity';
+import { Constat, ConstatStatus } from './entities/constat.entity';
 import { Repository } from 'typeorm';
 import { PaginatedConstats } from './dtos/outputs/constats.output';
-import { CreateConstatInput } from './dtos/inputs/create-constat.input';
-import {
-  ConstatStatus,
-  ConstatStatusOutput,
-} from './dtos/outputs/constat-status.output';
+import { ConstatStatusOutput } from './dtos/outputs/constat-status.output';
+import { ConstatSession } from './types/constat-session.type';
 
 @Injectable()
 export class ConstatsService {
@@ -25,53 +22,25 @@ export class ConstatsService {
     return new PaginatedConstats(data, total, page, limit);
   }
 
-  async create(
-    createConstatInput: CreateConstatInput,
-    driverAId: string,
-  ): Promise<Constat> {
-    const {
-      constatVehicles,
-      circumstancesA,
-      circumstancesB,
-      damagesA,
-      damagesB,
-      observationsA,
-      observationsB,
-      signaturesA,
-      signaturesB,
-      driverBId,
-      ...rest
-    } = createConstatInput;
-
-    const circumstances = [
-      ...circumstancesA.map((c) => ({ ...c, driverId: driverAId })),
-      ...circumstancesB.map((c) => ({ ...c, driverId: driverBId })),
-    ];
-    const damages = [
-      ...damagesA.map((d) => ({ ...d, driverId: driverAId })),
-      ...damagesB.map((d) => ({ ...d, driverId: driverBId })),
-    ];
-    const observations = [
-      ...observationsA.map((o) => ({ ...o, driverId: driverAId })),
-      ...observationsB.map((o) => ({ ...o, driverId: driverBId })),
-    ];
-    const signatures = [
-      ...signaturesA.map((s) => ({ ...s, driverId: driverAId })),
-      ...signaturesB.map((s) => ({ ...s, driverId: driverBId })),
-    ];
-
+  async finalizeFromSession(session: ConstatSession): Promise<Constat> {
     const constat = this.constatRepo.create({
-      ...rest,
-      driverAId,
-      driverBId,
-      constatVehicles,
-      circumstances,
-      damages,
-      observations,
-      signatures,
+      driverAId: session.driverAId,
+      driverBId: session.driverBId,
+      dateTime: session.draft.dateTime
+        ? new Date(session.draft.dateTime)
+        : new Date(),
+      location: session.draft.location ?? '',
+      injuredCount: session.draft.injuredCount ?? 0,
+      constatVehicles: session.draft.vehicles ?? [],
+      circumstances: session.draft.circumstances ?? [],
+      damages: session.draft.damages ?? [],
+      observations: session.draft.observations ?? [],
+      signatures: session.draft.signatures ?? [],
+      status: ConstatStatus.SUBMITTED,
     });
+    const saved = await this.constatRepo.save(constat);
 
-    return this.constatRepo.save(constat);
+    return saved;
   }
 
   checkStatusByVehicleIds(

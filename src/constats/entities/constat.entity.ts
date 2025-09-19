@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
 import {
   Column,
   CreateDateColumn,
@@ -15,6 +15,17 @@ import { Circumstance } from './circumstance.entity';
 import { Damage } from './damage.entity';
 import { Observation } from './observation.entity';
 import { Signature } from '../../signature/entities/signature.entity';
+
+export enum ConstatStatus {
+  SUBMITTED = 'SUBMITTED',
+  VALIDATED = 'VALIDATED',
+  REJECTED = 'REJECTED',
+}
+
+registerEnumType(ConstatStatus, {
+  name: 'ConstatStatus',
+  description: 'Status of the constat process',
+});
 
 @ObjectType()
 @Entity('constats')
@@ -84,4 +95,12 @@ export class Constat {
   })
   @Field(() => [Signature], { nullable: 'itemsAndList' })
   signatures: Relation<Signature[]>;
+
+  @Column({
+    type: 'enum',
+    enum: ConstatStatus,
+    default: ConstatStatus.SUBMITTED,
+  })
+  @Field(() => ConstatStatus)
+  status: ConstatStatus;
 }

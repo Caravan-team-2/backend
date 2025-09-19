@@ -8,6 +8,7 @@ import { Circumstance } from './entities/circumstance.entity';
 import { Damage } from './entities/damage.entity';
 import { Observation } from './entities/observation.entity';
 import { Attachment } from './entities/attachment.entity';
+import { ConstatGateway } from './constats.gateway';
 
 @Module({
   imports: [
@@ -20,6 +21,6 @@ import { Attachment } from './entities/attachment.entity';
       Attachment,
     ]),
   ],
-  providers: [ConstatsResolver, ConstatsService],
+  providers: [ConstatsResolver, ConstatsService, ConstatGateway],
 })
 export class ConstatsModule {}

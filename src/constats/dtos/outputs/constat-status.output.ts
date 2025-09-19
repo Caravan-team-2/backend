@@ -1,11 +1,5 @@
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
-
-export enum ConstatStatus {
-  PENDING = 'PENDING',
-  IN_PROGRESS = 'IN_PROGRESS',
-  COMPLETED = 'COMPLETED',
-  REJECTED = 'REJECTED',
-}
+import { ConstatStatus } from 'src/constats/entities/constat.entity';
 
 registerEnumType(ConstatStatus, { name: 'ConstatStatus' });
 
