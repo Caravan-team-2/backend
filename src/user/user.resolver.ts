@@ -15,6 +15,7 @@ import { UpdateUserInputType } from './dtos/update-user.input-type';
 import { KycDetails } from './entities/kyc-details.entity';
 import { Vehicle } from './entities/vehicle.entity';
 import { UserInsurance } from 'src/insurrance_company/entities/user-insurance.entity';
+import { InsuranceCompany } from 'src/insurrance_company/entities/insurance-company.entity';
 
 @UseGuards(AcessTokenGuard)
 @Resolver(User)
@@ -45,4 +46,4 @@ export class UserResolver {
   insurances(@Parent() user: User) {
     return this.userService.getUserInsurances(user.id);
   }
-}
+  }
