@@ -9,8 +9,8 @@ import {
   Relation,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
-import { InsuranceCompany } from './insurance-company.entity';
 import { Vehicle } from 'src/user/entities/vehicle.entity';
+import { InsuranceCompany } from 'src/insurrance_company/entities/insurance-company.entity';
 
 @ObjectType()
 @Entity('user_insurance')
@@ -55,4 +55,3 @@ export class UserInsurance {
   @Field()
   validTo: Date;
 }
-
