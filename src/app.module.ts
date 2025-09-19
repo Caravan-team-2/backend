@@ -2,9 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService, ConfigType } from '@nestjs/config';
-import { QUEUE_NAME } from './common/constants/queues';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { UserModule } from './user/user.module';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -31,6 +29,7 @@ import { Attachment } from './constats/entities/attachment.entity';
 import { PaymentModule } from './payment/payment.module';
 import { UserInsurranceModule } from './user_insurrance/user_insurrance.module';
 import aiConfig from './config/ai.config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync(databaseConfig.asProvider()),
@@ -68,6 +67,27 @@ import aiConfig from './config/ai.config';
         aiConfig,
       ],
     }),
+    ClientsModule.register([
+      {
+        name: 'AI_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+          
+            clientId: 'ai_service',
+            brokers: ['kafka:9092'],
+          },
+          consumer: {
+            allowAutoTopicCreation: true,
+            groupId: 'ai-consumer',
+          },
+          producerOnlyMode: true,
+          
+          
+        },
+      },
+    ]),
+
     AuthenticationModule,
     UserModule,
     EmailModule,

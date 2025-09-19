@@ -7,9 +7,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AppService } from './app.service';
-import { InjectQueue } from '@nestjs/bullmq';
-import { QUEUE_NAME } from './common/constants/queues';
-import { Queue } from 'bullmq';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadOptionsDto } from './user/dtos/upload-options.dto';
 
@@ -29,4 +26,12 @@ export class AppController {
   ) {
     return this.appService.uploadFile(file, options);
   }
-}
+@UseInterceptors(FileInterceptor('file'))
+  @Post('upload_kafka')
+  async uploadToKafak(
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.appService.uploadFileToKafka(file);
+  }
+
+  }

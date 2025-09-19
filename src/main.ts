@@ -3,14 +3,11 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { apiReference } from '@scalar/nestjs-api-reference';
 import helmet from 'helmet';
-import { doubleCsrf, DoubleCsrfConfigOptions } from 'csrf-csrf';
 import { AppModule } from './app.module';
 import { LoggerInterceptor } from './global/interceptors/logger.interceptor';
-import { ExtendedRequest } from './authentication/types/extended-req.type';
-import { ResponseFormatterInterceptor } from './global/interceptors/response-formatter.interceptor';
-import { HttpExceptionFilter } from './global/filter/httpException.filter';
 import { DatabaseExceptionFilter } from './global/filter/db.filter';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { Partitioners } from '@nestjs/microservices/external/kafka.interface';
 async function bootstrap() {
   // the cors will be changed to the front end url  in production environnement
   const app = await NestFactory.create(AppModule, {
@@ -22,13 +19,15 @@ async function bootstrap() {
     logger: ['log', 'error', 'warn', 'debug', 'verbose'],
   });
 
-  app.connectMicroservice({
+  app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.KAFKA,
     options: {
       client: {
         clientId: 'core',
         brokers: ['kafka:9092'],
       },
+
+
       producerOnlyMode: false,
       consumer: {
         groupId: 'dla3-consumer',
