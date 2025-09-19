@@ -2,6 +2,9 @@ import {
   WebSocketGateway,
   WebSocketServer,
   SubscribeMessage,
+  OnGatewayConnection,
+  ConnectedSocket,
+  MessageBody,
 } from '@nestjs/websockets';
 import { RedisService } from 'nestjs-redis-client';
 import { Server, Socket } from 'socket.io';
@@ -10,6 +13,7 @@ import { ConstatSession } from './types/constat-session.type';
 import { ConstatsService } from './constats.service';
 
 @WebSocketGateway({ cors: true })
+//TODO extend auth here
 export class ConstatGateway {
   @WebSocketServer() server: Server;
 
@@ -20,13 +24,14 @@ export class ConstatGateway {
 
   @SubscribeMessage('create_session')
   async handleCreateSession(
-    client: Socket,
-    payload: { role: string; userId: string },
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { role: string; userId: string },
   ) {
     const sessionId = uuid();
 
     const session: ConstatSession = {
       sessionId,
+      //TODO get this from socket
       driverAId: payload.userId,
       draft: {},
       accepted: [],
@@ -35,6 +40,7 @@ export class ConstatGateway {
       updatedAt: Date.now(),
     };
 
+    //NOTE:maybe extract this to a static method
     await this.redisService.set(`constat:session:${sessionId}`, session, 86400);
 
     await client.join(`constat:${sessionId}`);
@@ -43,8 +49,8 @@ export class ConstatGateway {
 
   @SubscribeMessage('join_session')
   async handleJoinSession(
-    client: Socket,
-    payload: { sessionId: string; userId: string },
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { sessionId: string; userId: string },
   ) {
     const key = `constat:session:${payload.sessionId}`;
     const session = await this.redisService.get<ConstatSession>(key);
@@ -63,8 +69,8 @@ export class ConstatGateway {
 
   @SubscribeMessage('update_draft')
   async handleUpdateDraft(
-    client: Socket,
-    payload: { sessionId: string; field: string; value: any },
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { sessionId: string; field: string; value: any },
   ) {
     const key = `constat:session:${payload.sessionId}`;
     const session = await this.redisService.get<ConstatSession>(key);
@@ -83,8 +89,8 @@ export class ConstatGateway {
 
   @SubscribeMessage('accept')
   async handleAccept(
-    client: Socket,
-    payload: { sessionId: string; userId: string },
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { sessionId: string; userId: string },
   ) {
     const key = `constat:session:${payload.sessionId}`;
     const session = await this.redisService.get<ConstatSession>(key);

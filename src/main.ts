@@ -10,6 +10,7 @@ import { ExtendedRequest } from './authentication/types/extended-req.type';
 import { ResponseFormatterInterceptor } from './global/interceptors/response-formatter.interceptor';
 import { HttpExceptionFilter } from './global/filter/httpException.filter';
 import { DatabaseExceptionFilter } from './global/filter/db.filter';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 async function bootstrap() {
   // the cors will be changed to the front end url  in production environnement
   const app = await NestFactory.create(AppModule, {
@@ -21,6 +22,20 @@ async function bootstrap() {
     logger: ['log', 'error', 'warn', 'debug', 'verbose'],
   });
 
+  app.connectMicroservice({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        clientId: 'core',
+        brokers: ['kafka:9092'],
+      },
+      producerOnlyMode: false,
+      consumer: {
+        groupId: 'dla3-consumer',
+      },
+    },
+  });
+  await app.startAllMicroservices();
   //SECURITY
   // added a basic auth for the swagger docs
   // TODO: add those into .env
