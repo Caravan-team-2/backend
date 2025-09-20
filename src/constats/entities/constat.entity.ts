@@ -18,6 +18,7 @@ import { Signature } from '../../signature/entities/signature.entity';
 
 export enum ConstatStatus {
   SUBMITTED = 'SUBMITTED',
+  IN_REVIEW = 'IN_REVIEW',
   VALIDATED = 'VALIDATED',
   REJECTED = 'REJECTED',
 }
@@ -64,6 +65,9 @@ export class Constat {
   @Field()
   injuredCount: number;
 
+  @Column()
+  @Field()
+  isPaid: boolean;
   @CreateDateColumn({ name: 'created_at' })
   @Field()
   createdAt: Date;
@@ -93,6 +97,13 @@ export class Constat {
   @OneToMany(() => Signature, (signature) => signature.constat, {
     cascade: true,
   })
+  // the estimated cost of the damages in dzd
+  // string format to avoid floating point issues
+  // nullable because the cost might not be estimated yet
+  // and will be filled later by an expert
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  cost: string;
   @Field(() => [Signature], { nullable: 'itemsAndList' })
   signatures: Relation<Signature[]>;
 

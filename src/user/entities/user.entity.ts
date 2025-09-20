@@ -17,6 +17,7 @@ import { Circumstance } from '../../constats/entities/circumstance.entity';
 import { Damage } from '../../constats/entities/damage.entity';
 import { Observation } from '../../constats/entities/observation.entity';
 import { Signature } from '../../signature/entities/signature.entity';
+import { WithdrawRequest } from '../../withdraw/entities/withdraw-request.entity';
 import { UserInsurance } from 'src/user_insurrance/entities/user-insurance.entity';
 import { InsuranceCompany } from 'src/insurrance_company/entities/insurance-company.entity';
 
@@ -121,4 +122,11 @@ export class User {
   @OneToMany(() => Signature, (signature) => signature.driver)
   @Field(() => [Signature], { nullable: 'itemsAndList' })
   signatures: Relation<Signature[]>;
+  @Field()
+  @Column({ type: 'float', default: 0 })
+  balance: number;
+
+  @OneToMany(() => WithdrawRequest, (withdrawRequest) => withdrawRequest.user)
+  @Field(() => [WithdrawRequest], { nullable: 'itemsAndList' })
+  withdrawRequests: Relation<WithdrawRequest[]>;
 }
