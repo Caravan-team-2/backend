@@ -2,12 +2,16 @@ import {
   WebSocketGateway,
   WebSocketServer,
   SubscribeMessage,
+  ConnectedSocket,
+  MessageBody,
 } from '@nestjs/websockets';
 import { RedisService } from 'nestjs-redis-client';
 import { Server, Socket } from 'socket.io';
 import { v4 as uuid } from 'uuid';
 import { ConstatSession } from './types/constat-session.type';
 import { ConstatsService } from './constats.service';
+import { SignatureType } from '../signature/entities/signature.entity';
+import { SignatureService } from 'src/signature/signature.service';
 
 @WebSocketGateway({ cors: true })
 export class ConstatGateway {
@@ -16,12 +20,13 @@ export class ConstatGateway {
   constructor(
     private readonly redisService: RedisService,
     private readonly constatService: ConstatsService,
+    private readonly signatureService: SignatureService,
   ) {}
 
   @SubscribeMessage('create_session')
   async handleCreateSession(
-    client: Socket,
-    payload: { role: string; userId: string },
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { role: string; userId: string },
   ) {
     const sessionId = uuid();
 
@@ -30,21 +35,21 @@ export class ConstatGateway {
       driverAId: payload.userId,
       draft: {},
       accepted: [],
+      signatureValidation: {},
       status: 'draft',
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
 
     await this.redisService.set(`constat:session:${sessionId}`, session, 86400);
-
     await client.join(`constat:${sessionId}`);
     client.emit('session_created', { sessionId });
   }
 
   @SubscribeMessage('join_session')
   async handleJoinSession(
-    client: Socket,
-    payload: { sessionId: string; userId: string },
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { sessionId: string; userId: string },
   ) {
     const key = `constat:session:${payload.sessionId}`;
     const session = await this.redisService.get<ConstatSession>(key);
@@ -53,9 +58,18 @@ export class ConstatGateway {
     session.driverBId = payload.userId;
     session.updatedAt = Date.now();
 
-    await this.redisService.set(key, session, 86400);
+    // Initialize signature validation for driver B
+    if (!session.signatureValidation) {
+      session.signatureValidation = {};
+    }
+    session.signatureValidation[payload.userId] = {
+      visualSignatureProvided: false,
+      cryptoSignatureGenerated: false,
+    };
 
+    await this.redisService.set(key, session, 86400);
     await client.join(`constat:${payload.sessionId}`);
+
     this.server
       .to(`constat:${payload.sessionId}`)
       .emit('driver_joined', { userId: payload.userId });
@@ -63,8 +77,8 @@ export class ConstatGateway {
 
   @SubscribeMessage('update_draft')
   async handleUpdateDraft(
-    client: Socket,
-    payload: { sessionId: string; field: string; value: any },
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { sessionId: string; field: string; value: any },
   ) {
     const key = `constat:session:${payload.sessionId}`;
     const session = await this.redisService.get<ConstatSession>(key);
@@ -81,23 +95,109 @@ export class ConstatGateway {
     });
   }
 
-  @SubscribeMessage('accept')
-  async handleAccept(
-    client: Socket,
-    payload: { sessionId: string; userId: string },
+  @SubscribeMessage('submit_signature')
+  async handleSubmitSignature(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    payload: {
+      sessionId: string;
+      userId: string;
+      visualSignatureData: string; // base64 image or svg code
+    },
   ) {
     const key = `constat:session:${payload.sessionId}`;
     const session = await this.redisService.get<ConstatSession>(key);
     if (!session) return client.emit('error', { msg: 'Session not found' });
+
+    // Initialize signatures array if not exists
+    if (!session.draft.signatures) {
+      session.draft.signatures = [];
+    }
+
+    // Add visual signature
+    const visualSignature = {
+      id: uuid(),
+      driverId: payload.userId,
+      signatureType: SignatureType.VISUAL,
+      signatureData: payload.visualSignatureData,
+    };
+
+    // Generate crypto signature (you'll need to implement this based on your crypto logic)
+    const cryptoSignatureData = this.signatureService.generateHash();
+    const cryptoSignature = {
+      id: uuid(),
+      driverId: payload.userId,
+      signatureType: SignatureType.CRYPTO,
+      signatureData: cryptoSignatureData,
+    };
+
+    // Add both signatures to session
+    session.draft.signatures.push(visualSignature, cryptoSignature);
+
+    // Update signature validation
+    if (!session.signatureValidation) {
+      session.signatureValidation = {};
+    }
+    session.signatureValidation[payload.userId] = {
+      visualSignatureProvided: true,
+      cryptoSignatureGenerated: true,
+      validatedAt: Date.now(),
+    };
+
+    session.updatedAt = Date.now();
+    await this.redisService.set(key, session, 86400);
+
+    client.emit('signature_submitted', {
+      userId: payload.userId,
+      validated: true,
+    });
+  }
+
+  @SubscribeMessage('accept')
+  async handleAccept(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { sessionId: string; userId: string },
+  ) {
+    const key = `constat:session:${payload.sessionId}`;
+    const session = await this.redisService.get<ConstatSession>(key);
+    if (!session) return client.emit('error', { msg: 'Session not found' });
+
+    // Validate signature before accepting
+    const signatureValidation = session.signatureValidation?.[payload.userId];
+    if (
+      !signatureValidation?.visualSignatureProvided ||
+      !signatureValidation?.cryptoSignatureGenerated
+    ) {
+      return client.emit('error', {
+        msg: 'Signature required before acceptance',
+      });
+    }
 
     if (!session.accepted.includes(payload.userId)) {
       session.accepted.push(payload.userId);
     }
 
     if (session.accepted.length === 2) {
+      const allDriversSigned = [session.driverAId, session.driverBId]
+        .filter((driverId): driverId is string => driverId !== undefined)
+        .every((driverId) => {
+          const validation = session.signatureValidation?.[driverId];
+          return (
+            this.hasValidSignature(validation) &&
+            validation.visualSignatureProvided
+          );
+        });
+
+      if (!allDriversSigned) {
+        return client.emit('error', {
+          msg: 'All drivers must sign before submission',
+        });
+      }
+
       session.status = 'submitted';
       const savedConstat =
         await this.constatService.finalizeFromSession(session);
+
       this.server.to(`constat:${payload.sessionId}`).emit('constat_submitted', {
         constatId: savedConstat.id,
         status: savedConstat.status,
@@ -113,5 +213,17 @@ export class ConstatGateway {
       status: session.status,
       accepted: session.accepted,
     });
+  }
+
+  hasValidSignature(
+    validation: unknown,
+  ): validation is { visualSignatureProvided: boolean } {
+    return (
+      validation !== null &&
+      validation !== undefined &&
+      typeof validation === 'object' &&
+      'visualSignatureProvided' in validation &&
+      typeof (validation as any).visualSignatureProvided === 'boolean'
+    );
   }
 }

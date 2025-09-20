@@ -13,6 +13,11 @@ export interface ConstatSession {
 
     vehicles?: Array<{
       id?: string;
+      vehicleId?: string;
+      driverRole: 'A' | 'B';
+      insurerId?: string;
+      insuranceNumber?: string;
+      licenseNumber?: string;
       ownerName?: string;
       licensePlate?: string;
       insuranceCompany?: string;
@@ -22,30 +27,43 @@ export interface ConstatSession {
 
     circumstances?: Array<{
       id?: string;
-      description: string;
-      checked: boolean;
+      driverId: string;
+      code: number;
+      description?: string;
+      checked?: boolean;
     }>;
 
     damages?: Array<{
       id?: string;
+      driverId: string;
       description: string;
       photoUrls?: string[];
     }>;
 
     observations?: Array<{
       id?: string;
+      driverId: string;
       note: string;
     }>;
 
     signatures?: Array<{
       id?: string;
-      userId: string;
-      imageUrl: string;
+      driverId: string;
+      signatureType: 'VISUAL' | 'CRYPTO';
+      signatureData: string;
+      tempImageUrl?: string;
     }>;
   };
 
-  // userIds of drivers who accepted
   accepted: string[];
+
+  signatureValidation?: {
+    [userId: string]: {
+      visualSignatureProvided: boolean;
+      cryptoSignatureGenerated: boolean;
+      validatedAt?: number;
+    };
+  };
 
   status: ConstatSessionStatus;
   createdAt: number;

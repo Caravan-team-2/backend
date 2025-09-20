@@ -7,7 +7,10 @@ import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UploadApiResponse } from 'cloudinary';
 import { QUEUE_NAME } from 'src/common/constants/queues';
-import { Attachment, AttachmentStatus } from 'src/constats/entities/attachment.entity';
+import {
+  Attachment,
+  AttachmentStatus,
+} from 'src/constats/entities/attachment.entity';
 import { Repository } from 'typeorm';
 
 @QueueEventsListener(QUEUE_NAME.UPLOAD)
@@ -63,7 +66,7 @@ export class AttachmentEventListener extends QueueEventsHost {
     await this.attachmentRepo.update(
       { jobId },
       {
-        status:AttachmentStatus.REJECTED,
+        status: AttachmentStatus.REJECTED,
         errorMessage: failedReason,
       },
     );

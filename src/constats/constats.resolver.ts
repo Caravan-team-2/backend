@@ -5,7 +5,10 @@ import { PaginatedConstats } from './dtos/outputs/constats.output';
 import { PaginationInput } from 'src/common/dtos/paginationInput.dto';
 import { USER } from 'src/authentication/decorators/user.decorator';
 import { ConstatStatusOutput } from './dtos/outputs/constat-status.output';
+import { UseGuards } from '@nestjs/common';
+import { AcessTokenGuard } from 'src/authentication/guards/access-token.guard';
 
+@UseGuards(AcessTokenGuard)
 @Resolver(() => Constat)
 export class ConstatsResolver {
   constructor(private readonly constatService: ConstatsService) {}

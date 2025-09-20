@@ -39,4 +39,3 @@ export class Circumstance {
   @Field()
   code: number; //seed later or something
 }
-

@@ -25,7 +25,6 @@ export class AccessTokenStrategy extends PassportStrategy(
     });
   }
 
-  
   validate(payload: AccessTokenPayload): AccessTokenPayload['user'] {
     return payload.user;
   }

@@ -2,16 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationInput } from 'src/common/dtos/paginationInput.dto';
 import { Constat, ConstatStatus } from './entities/constat.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { PaginatedConstats } from './dtos/outputs/constats.output';
 import { ConstatStatusOutput } from './dtos/outputs/constat-status.output';
 import { ConstatSession } from './types/constat-session.type';
+import { Signature } from 'src/signature/entities/signature.entity';
 
 @Injectable()
 export class ConstatsService {
   constructor(
     @InjectRepository(Constat)
     private readonly constatRepo: Repository<Constat>,
+    private readonly dataSource: DataSource,
   ) {}
   async getMany({ page = 1, limit = 10 }: PaginationInput, userId: string) {
     const [data, total] = await this.constatRepo.findAndCount({
@@ -23,26 +25,53 @@ export class ConstatsService {
   }
 
   async finalizeFromSession(session: ConstatSession): Promise<Constat> {
-    const constat = this.constatRepo.create({
-      driverAId: session.driverAId,
-      driverBId: session.driverBId,
-      dateTime: session.draft.dateTime
-        ? new Date(session.draft.dateTime)
-        : new Date(),
-      location: session.draft.location ?? '',
-      injuredCount: session.draft.injuredCount ?? 0,
-      constatVehicles: session.draft.vehicles ?? [],
-      circumstances: session.draft.circumstances ?? [],
-      damages: session.draft.damages ?? [],
-      observations: session.draft.observations ?? [],
-      signatures: session.draft.signatures ?? [],
-      status: ConstatStatus.SUBMITTED,
+    return await this.dataSource.transaction(async (manager) => {
+      if (!session.driverBId) {
+        throw new Error('Both drivers must be present to finalize constat');
+      }
+
+      if (!session.draft.signatures || session.draft.signatures.length === 0) {
+        throw new Error('Signatures are required to finalize constat');
+      }
+
+      const requiredDrivers = [session.driverAId, session.driverBId];
+      const signedDrivers = session.draft.signatures.map((sig) => sig.driverId);
+      const allDriversSigned = requiredDrivers.every((driverId) =>
+        signedDrivers.includes(driverId),
+      );
+
+      if (!allDriversSigned) {
+        throw new Error('All drivers must sign before finalizing constat');
+      }
+
+      const constat = manager.create(Constat, {
+        driverAId: session.driverAId,
+        driverBId: session.driverBId,
+        dateTime: session.draft.dateTime
+          ? new Date(session.draft.dateTime)
+          : new Date(),
+        location: session.draft.location ?? '',
+        injuredCount: session.draft.injuredCount ?? 0,
+        isPaid: false,
+        status: ConstatStatus.SUBMITTED,
+      });
+
+      const savedConstat = await manager.save(constat);
+
+      const signatureEntities = session.draft.signatures.map((signature) =>
+        manager.create(Signature, {
+          constatId: savedConstat.id,
+          driverId: signature.driverId,
+          signatureType: signature.signatureType,
+          signatureData: signature.signatureData,
+        }),
+      );
+
+      await manager.save(Signature, signatureEntities);
+
+      return savedConstat;
     });
-    const saved = await this.constatRepo.save(constat);
-
-    return saved;
   }
-
   checkStatusByVehicleIds(
     vehicleAId: string,
     vehicleBId: string,

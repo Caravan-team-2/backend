@@ -9,6 +9,7 @@ import { Damage } from './entities/damage.entity';
 import { Observation } from './entities/observation.entity';
 import { Attachment } from './entities/attachment.entity';
 import { ConstatGateway } from './constats.gateway';
+import { SignatureModule } from 'src/signature/signature.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ConstatGateway } from './constats.gateway';
       Observation,
       Attachment,
     ]),
+    SignatureModule,
   ],
   providers: [ConstatsResolver, ConstatsService, ConstatGateway],
 })

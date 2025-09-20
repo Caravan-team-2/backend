@@ -24,7 +24,6 @@ export default registerAs(
           'http://localhost:3000/auth/google/redirect',
         scope: ['email', 'profile'],
       },
-   
     },
   }),
 );

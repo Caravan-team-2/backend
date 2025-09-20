@@ -44,4 +44,4 @@ export class UserResolver {
   insurances(@Parent() user: User) {
     return this.userService.getUserInsurances(user.id);
   }
-  }
+}

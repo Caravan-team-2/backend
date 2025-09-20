@@ -6,7 +6,6 @@ import { UserService } from 'src/user/user.service';
 import { RefreshTokenPayload } from '../interfaces/refresh-token.dto';
 import { User } from 'src/user/entities/user.entity';
 
-
 @Injectable()
 export class RefreshTokenStrategy extends PassportStrategy(
   Strategy,
