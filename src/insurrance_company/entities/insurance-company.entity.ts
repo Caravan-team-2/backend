@@ -1,5 +1,6 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { ConstatVehicle } from 'src/constats/entities/constat-vehicle.entity';
+import { Integration } from 'src/integration/entities/integration.entity';
 import { User } from 'src/user/entities/user.entity';
 import { UserInsurance } from 'src/user_insurrance/entities/user-insurance.entity';
 import {
@@ -8,6 +9,7 @@ import {
   Column,
   OneToMany,
   Relation,
+  OneToOne,
 } from 'typeorm';
 
 @ObjectType()
@@ -29,6 +31,9 @@ export class InsuranceCompany {
   @Field({ nullable: true })
   integrationId: string;
 
+  @OneToOne(() => Integration, (integration) => integration.id)
+  @Field(() => Integration, { nullable: true })
+  integration: Relation<Integration>; //lX9m8
   @OneToMany(() => ConstatVehicle, (constatVehicle) => constatVehicle.insurer)
   @Field(() => [ConstatVehicle], { nullable: 'itemsAndList' })
   constatVehicle: Relation<ConstatVehicle[]>; //3mX8G
