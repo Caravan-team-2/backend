@@ -31,5 +31,5 @@ export class HealthController {
       () => this.memory.checkHeap('memory heap', 150 * 1024 * 1024), // 150 MB
       () => this.memory.checkRSS('memory RSS', 150 * 1024 * 1024), // 150 MB
     ]);
- }
+  }
 }

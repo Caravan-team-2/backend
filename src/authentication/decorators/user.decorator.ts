@@ -12,12 +12,9 @@ export const USER = createParamDecorator(
     } else if (ctx.getType<any>() === 'graphql') {
       const gqlContext = GqlExecutionContext.create(ctx);
       user = gqlContext.getContext().req.user;
-    }
-    
-    else {
+    } else {
       throw new Error('Unsupported context type');
     }
-
 
     if (!user) {
       // Or handle as per your application's needs, maybe return null or a default user

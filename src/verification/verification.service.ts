@@ -24,7 +24,7 @@ export class VerificationService {
     return await this.attachmentRepo.findOneByOrFail({ id: documentId });
   }
   async isUserVerified(userId: string) {
-    const userVerification=await this.userService.getUserVerification(userId);
+    const userVerification = await this.userService.getUserVerification(userId);
     if (!userVerification) {
       throw new ConflictException('User verification not found');
     }
@@ -52,14 +52,12 @@ export class VerificationService {
       }
       throw new ConflictException('Document not verified');
     } catch (error) {
-  
       if (isAxiosError(error)) {
         this.logger.error(`Axios error details: ${JSON.stringify(error)}`);
 
-      throw new ConflictException('problem in validation try again');
+        throw new ConflictException('problem in validation try again');
       }
       throw error;
-
     }
   }
 }

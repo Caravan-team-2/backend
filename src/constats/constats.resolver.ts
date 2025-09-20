@@ -9,6 +9,7 @@ import { UseGuards } from '@nestjs/common';
 import { AcessTokenGuard } from 'src/authentication/guards/access-token.guard';
 import { User } from 'src/user/entities/user.entity';
 
+@UseGuards(AcessTokenGuard)
 @Resolver(() => Constat)
 export class ConstatsResolver {
   constructor(private readonly constatService: ConstatsService) {}

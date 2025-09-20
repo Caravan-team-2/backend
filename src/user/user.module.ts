@@ -11,10 +11,10 @@ import { UserInsurance } from 'src/user_insurrance/entities/user-insurance.entit
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, KycDetails, Vehicle,UserInsurance]),
+    TypeOrmModule.forFeature([User, KycDetails, Vehicle, UserInsurance]),
     forwardRef(() => AuthenticationModule),
   ],
-  providers: [UserService, UserResolver,UpdateUserInputType],
+  providers: [UserService, UserResolver, UpdateUserInputType],
   exports: [UserService],
 })
 export class UserModule {}

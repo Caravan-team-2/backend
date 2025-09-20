@@ -18,7 +18,7 @@ export class UserInsurranceService {
     private readonly vehicleRepo: Repository<Vehicle>,
   ) {}
   findUserInsurrance(userId: string) {
-    return this.userInsurranceRepo.findOneBy({ userId });
+    return this.userInsurranceRepo.findBy({ userId });
   }
   create(createUserInsurranceInput: CreateUserInsurranceInput) {
     return 'This action adds a new userInsurrance';

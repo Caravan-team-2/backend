@@ -3,19 +3,19 @@ import {
   Query,
   Mutation,
   Args,
-  Int,
   ResolveField,
   Parent,
 } from '@nestjs/graphql';
 import { UserInsurranceService } from './user_insurrance.service';
-import { CreateUserInsurranceInput } from './dto/create-user_insurrance.input';
 import { UpdateUserInsurranceInput } from './dto/update-user_insurrance.input';
 import { UseGuards } from '@nestjs/common';
 import { SuperAdminGuard } from 'src/authentication/guards/super-admin.guard';
 import { USER } from 'src/authentication/decorators/user.decorator';
 import { UserInsurance } from './entities/user-insurance.entity';
 import { Vehicle } from 'src/user/entities/vehicle.entity';
+import { AcessTokenGuard } from 'src/authentication/guards/access-token.guard';
 
+@UseGuards(AcessTokenGuard)
 @Resolver(() => UserInsurance)
 export class UserInsurranceResolver {
   constructor(private readonly userInsurranceService: UserInsurranceService) {}
@@ -36,7 +36,7 @@ export class UserInsurranceResolver {
   findAll() {
     return this.userInsurranceService.findAll();
   }
-  @Query(() => UserInsurance, { name: 'userInsurrances' })
+  @Query(() => [UserInsurance], { name: 'userInsurrances' })
   findUserInsurrance(@USER('id') userId: string) {
     return this.userInsurranceService.findUserInsurrance(userId);
   }

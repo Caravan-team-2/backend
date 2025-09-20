@@ -34,7 +34,7 @@ export class KycDetails {
   id: string;
 
   //TODO change
-  @Column({ name: 'user_id', unique: true ,nullable:true})
+  @Column({ name: 'user_id', unique: true, nullable: true })
   @Field()
   userId: string;
   @JoinColumn({ name: 'user_id' })

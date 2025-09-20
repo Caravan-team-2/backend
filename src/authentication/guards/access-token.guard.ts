@@ -7,7 +7,7 @@ export class AcessTokenGuard extends AuthGuard('access-token') {
   constructor() {
     super();
   }
-      getRequest(context: ExecutionContext) {
+  getRequest(context: ExecutionContext) {
     const ctx = GqlExecutionContext.create(context);
     return ctx.getContext().req;
   }

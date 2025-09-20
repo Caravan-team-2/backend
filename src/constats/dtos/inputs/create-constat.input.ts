@@ -12,7 +12,7 @@ import { CreateConstatVehicleInput } from './create-constat-vehicle.input';
 import { CreateCircumstanceInput } from './create-circumstance.input';
 import { CreateDamageInput } from './create-damage.input';
 import { CreateObservationInput } from './create-observation.input';
-import { CreateSignatureInput } from './create-signature.input';
+import { CreateSignatureInput } from 'src/signature/dtos/create-signature.dto';
 
 @InputType()
 export class CreateConstatInput {
@@ -82,4 +82,3 @@ export class CreateConstatInput {
   @Type(() => CreateSignatureInput)
   signaturesB: CreateSignatureInput[];
 }
-

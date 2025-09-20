@@ -43,9 +43,13 @@ export class Signature {
   @Field(() => User)
   driver: Relation<User>;
 
-  @Column({ name: 'signature_type', type: 'enum', enum: SignatureType })
-  @Field(() => SignatureType)
-  signatureType: SignatureType;
+  @Column({ type: 'text' })
+  @Field()
+  visualSignature: string;
+
+  @Column({ type: 'text' })
+  @Field()
+  cryptoSignature: string;
 
   @Column({ name: 'signature_data', type: 'text' })
   @Field()

@@ -13,7 +13,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
       passReqToCallback: true, // Allows us to access the request object
     });
   }
-  async validate(req,email: string, password: string): Promise<User> {
+  async validate(req, email: string, password: string): Promise<User> {
     const result = await this.authenticationService.validateUser(
       email,
       password,

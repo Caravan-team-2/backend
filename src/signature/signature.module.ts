@@ -7,5 +7,6 @@ import { Signature } from './entities/signature.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Signature])],
   providers: [SignatureResolver, SignatureService],
+  exports: [SignatureService],
 })
 export class SignatureModule {}
