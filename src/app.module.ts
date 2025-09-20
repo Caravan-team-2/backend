@@ -2,9 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService, ConfigType } from '@nestjs/config';
-import { QUEUE_NAME } from './common/constants/queues';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { UserModule } from './user/user.module';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -17,6 +15,7 @@ import authConfig from './config/auth.config';
 import { RedisModule } from 'nestjs-redis-client';
 import cloudConfig from './config/cloud.config';
 import appConfig from './config/app.config';
+import paymentConfig from './config/payment.config';
 
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -28,9 +27,11 @@ import { SignatureModule } from './signature/signature.module';
 import { PdfGeneratorModule } from './pdf-generator/pdf-generator.module';
 import databaseConfig from './config/database.config';
 import { Attachment } from './constats/entities/attachment.entity';
+import { WithdrawModule } from './withdraw/withdraw.module';
 import { PaymentModule } from './payment/payment.module';
 import { UserInsurranceModule } from './user_insurrance/user_insurrance.module';
 import aiConfig from './config/ai.config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync(databaseConfig.asProvider()),
@@ -56,6 +57,7 @@ import aiConfig from './config/ai.config';
     RedisModule.registerAsync(redisConfig.asProvider()),
     ConfigModule.forRoot({
       expandVariables: true,
+
       cache: true,
       isGlobal: true, // Makes the configuration available globally
       validationSchema: null, // You can define a Joi schema here for validation if needed
@@ -66,8 +68,30 @@ import aiConfig from './config/ai.config';
         appConfig,
         cloudConfig,
         aiConfig,
+        paymentConfig,
       ],
     }),
+    ClientsModule.register([
+      {
+        name: 'AI_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+          
+            clientId: 'ai_service',
+            brokers: ['kafka:9092'],
+          },
+          consumer: {
+            allowAutoTopicCreation: true,
+            groupId: 'ai-consumer',
+          },
+          producerOnlyMode: true,
+          
+          
+        },
+      },
+    ]),
+
     AuthenticationModule,
     UserModule,
     EmailModule,
@@ -80,6 +104,7 @@ import aiConfig from './config/ai.config';
     PdfGeneratorModule,
     PaymentModule,
     UserInsurranceModule,
+    WithdrawModule,
   ],
   controllers: [AppController],
   providers: [AppService],

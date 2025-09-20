@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Queue } from 'bullmq';
 import { QUEUE_NAME } from './common/constants/queues';
 import { InjectQueue } from '@nestjs/bullmq';
@@ -12,6 +12,7 @@ import {
   AttachmentType,
 } from './constats/entities/attachment.entity';
 import { Repository } from 'typeorm';
+import { ClientProxy } from '@nestjs/microservices';
 /*
  * Since we are using graphql for this branch we cannot handle file uploads with form-data like rest before,
  * so Uploading the file on the request needed is not possible (rather not recommended for security and performance reasons),
@@ -31,10 +32,16 @@ import { Repository } from 'typeorm';
 export class AppService {
   constructor(
     @InjectQueue(QUEUE_NAME.UPLOAD) private readonly uploadQueue: Queue,
+    @Inject('AI_SERVICE')private readonly kafka: ClientProxy,
+
     @InjectRepository(Attachment)
     private readonly attachmentRepo: Repository<Attachment>,
   ) {}
 
+  uploadFileToKafka(file: Express.Multer.File) {
+    const payload = { buffer:file.buffer };
+    return this.kafka.emit('upload_file', payload);
+  }
   /**
    * * Upload a file to the cloudinary on the background
    * * Create an attachement in the database and return the id to the user

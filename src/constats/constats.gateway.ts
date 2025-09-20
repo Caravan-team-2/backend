@@ -14,6 +14,7 @@ import { SignatureType } from '../signature/entities/signature.entity';
 import { SignatureService } from 'src/signature/signature.service';
 
 @WebSocketGateway({ cors: true })
+//TODO extend auth here
 export class ConstatGateway {
   @WebSocketServer() server: Server;
 
@@ -32,6 +33,7 @@ export class ConstatGateway {
 
     const session: ConstatSession = {
       sessionId,
+      //TODO get this from socket
       driverAId: payload.userId,
       draft: {},
       accepted: [],
@@ -41,6 +43,7 @@ export class ConstatGateway {
       updatedAt: Date.now(),
     };
 
+    //NOTE:maybe extract this to a static method
     await this.redisService.set(`constat:session:${sessionId}`, session, 86400);
     await client.join(`constat:${sessionId}`);
     client.emit('session_created', { sessionId });
@@ -94,7 +97,6 @@ export class ConstatGateway {
       updatedAt: session.updatedAt,
     });
   }
-
   @SubscribeMessage('submit_signature')
   async handleSubmitSignature(
     @ConnectedSocket() client: Socket,

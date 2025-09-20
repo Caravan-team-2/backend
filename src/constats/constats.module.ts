@@ -10,6 +10,9 @@ import { Observation } from './entities/observation.entity';
 import { Attachment } from './entities/attachment.entity';
 import { ConstatGateway } from './constats.gateway';
 import { SignatureModule } from 'src/signature/signature.module';
+import { ConstatGatewayDocsController } from './constats.controller';
+import { User } from 'src/user/entities/user.entity';
+import { PaymentModule } from 'src/payment/payment.module';
 
 @Module({
   imports: [
@@ -20,9 +23,12 @@ import { SignatureModule } from 'src/signature/signature.module';
       Damage,
       Observation,
       Attachment,
+      User,
     ]),
     SignatureModule,
+    PaymentModule,
   ],
   providers: [ConstatsResolver, ConstatsService, ConstatGateway],
+  controllers: [ConstatGatewayDocsController],
 })
 export class ConstatsModule {}
