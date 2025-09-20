@@ -12,6 +12,7 @@ This project is currently in active development. Contributions are welcome!
 
 * [🚀 Features](#-features)
 * [ Architecture](#architecture)
+* [Hosting Cost Estimation](COST.md)
 * [📂 Folder Structure](#-folder-structure)
 * [🛠️ Setup & Run](#-setup--run)
 * [🧪 Scripts](#-scripts)
