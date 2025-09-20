@@ -82,4 +82,4 @@ participant Saa as Saa
 ```
 
 ## Integration Module Architecture
-for more details about this module, please refer to the [INTEGRATION_ARCHITECURE.md](INTEGRATION_ARCHITECURE.md) file.
+for more details about this module, please refer to the [INTEGRATION_ARCHITECURE.md](INTEGRATION_ARCHITECTURE.md) file.
