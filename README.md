@@ -33,6 +33,7 @@ This project is currently in active development. Contributions are welcome!
 * 🌐 **WebSockets**: Real-time communication with Socket.io and Redis adapter for horizontal scaling.  
 * 📬 **Mailing Module**: Mailer integration for sending transactional emails.
 * ☁️ **Cloud Storage**: Cloudinary module for seamless media uploads and management.
+* 💰 **SelfManaged Monetization**: Payment processing module for handling payments from different providers.
 * 📄 **PDF Generation**: Built-in service using Puppeteer to generate PDFs dynamically.
 * 💳 **Payment Processing**: Module for handling payments.
 * 🎯 **Background Jobs**: BullMQ with Redis backend for handling asynchronous tasks like email queues.

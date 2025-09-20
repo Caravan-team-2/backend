@@ -71,6 +71,9 @@ graph TB
 2. **Event Consumption**: Other services that are interested in these events subscribe to the relevant Kafka topics. When an event is published, the subscribing services consume the event and process it accordingly.
 3. **Data Synchronization**: The consuming services update their databases based on the events they receive, ensuring that all systems remain consistent and up-to-date.
 4. **API Interactions**: For operations that require direct interaction (e.g., fetching specific data), services can make RESTful API calls to each other as needed.
+## Security Considerations
+1. **Authentication**: Use API keys for authenticating requests between services in rest , and use predefined user accounts with kafka.
+2. **Authorization**: Implement role-based access control to ensure that only authorized services can publish or consume events from specific topics. Refer to the [Kafka.md](Kafka.md) file for more details.
 ## Interaction patterns
 1. **Asynchronous Communication**: The primary mode of interaction between services is through Kafka, allowing for decoupled and scalable communication.
 2. **Event-Driven Architecture**: Services react to events as they occur, enabling real-time data processing and responsiveness.
