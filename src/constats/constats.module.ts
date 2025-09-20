@@ -10,6 +10,8 @@ import { Observation } from './entities/observation.entity';
 import { Attachment } from './entities/attachment.entity';
 import { ConstatGateway } from './constats.gateway';
 import { ConstatGatewayDocsController } from './constats.controller';
+import { User } from 'src/user/entities/user.entity';
+import { PaymentModule } from 'src/payment/payment.module';
 
 @Module({
   imports: [
@@ -20,7 +22,9 @@ import { ConstatGatewayDocsController } from './constats.controller';
       Damage,
       Observation,
       Attachment,
+      User,
     ]),
+    PaymentModule,
   ],
   providers: [ConstatsResolver, ConstatsService, ConstatGateway],
   controllers: [ConstatGatewayDocsController],

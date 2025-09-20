@@ -36,7 +36,7 @@ export class UserInsurranceResolver {
   findAll() {
     return this.userInsurranceService.findAll();
   }
-  @Query(() => UserInsurance, { name: 'userInsurrance' })
+  @Query(() => UserInsurance, { name: 'userInsurrances' })
   findUserInsurrance(@USER('id') userId: string) {
     return this.userInsurranceService.findUserInsurrance(userId);
   }

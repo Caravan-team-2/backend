@@ -26,6 +26,7 @@ import { SignatureModule } from './signature/signature.module';
 import { PdfGeneratorModule } from './pdf-generator/pdf-generator.module';
 import databaseConfig from './config/database.config';
 import { Attachment } from './constats/entities/attachment.entity';
+import { WithdrawModule } from './withdraw/withdraw.module';
 import { PaymentModule } from './payment/payment.module';
 import { UserInsurranceModule } from './user_insurrance/user_insurrance.module';
 import aiConfig from './config/ai.config';
@@ -55,6 +56,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     RedisModule.registerAsync(redisConfig.asProvider()),
     ConfigModule.forRoot({
       expandVariables: true,
+
       cache: true,
       isGlobal: true, // Makes the configuration available globally
       validationSchema: null, // You can define a Joi schema here for validation if needed
@@ -100,6 +102,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     PdfGeneratorModule,
     PaymentModule,
     UserInsurranceModule,
+    WithdrawModule,
   ],
   controllers: [AppController],
   providers: [AppService],
