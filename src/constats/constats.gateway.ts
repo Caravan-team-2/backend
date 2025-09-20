@@ -12,29 +12,35 @@ import { ConstatSession } from './types/constat-session.type';
 import { ConstatsService } from './constats.service';
 import { SignatureType } from '../signature/entities/signature.entity';
 import { SignatureService } from 'src/signature/signature.service';
+import { AuthGateway } from 'src/common/gateway/auth.gateway';
 
 @WebSocketGateway({ cors: true })
 //TODO extend auth here
-export class ConstatGateway {
+export class ConstatGateway extends AuthGateway {
   @WebSocketServer() server: Server;
 
   constructor(
     private readonly redisService: RedisService,
     private readonly constatService: ConstatsService,
     private readonly signatureService: SignatureService,
-  ) {}
+  ) {
+    super();
+  }
 
   @SubscribeMessage('create_session')
   async handleCreateSession(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { role: string; userId: string },
+    @MessageBody() payload: { role: string },
   ) {
     const sessionId = uuid();
 
+    const user = this.extractUserFromSocket(client);
+
+    const userId = user!.id;
     const session: ConstatSession = {
       sessionId,
       //TODO: get this from socket
-      driverAId: payload.userId,
+      driverAId: userId,
       draft: {},
       accepted: [],
       signatureValidation: {},

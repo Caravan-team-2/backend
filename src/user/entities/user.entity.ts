@@ -122,7 +122,6 @@ export class User {
   @OneToMany(() => Signature, (signature) => signature.driver)
   @Field(() => [Signature], { nullable: 'itemsAndList' })
   signatures: Relation<Signature[]>;
-  @Field()
   @Column({ type: 'float', default: 0 })
   balance: number;
 
