@@ -4,6 +4,7 @@ import { Integration } from './entities/integration.entity';
 import { CreateIntegrationInput } from './dtos/create-integration.input';
 import { UpdateIntegrationInput } from './dtos/update-integration.input';
 
+
 @Resolver(() => Integration)
 export class IntegrationResolver {
   constructor(private readonly integrationService: IntegrationService) {}

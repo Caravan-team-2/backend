@@ -99,7 +99,7 @@ export class ConstatsService {
           const insuranceCompany = vehicles.insurer;
           //if the inssurance company has an integration send the constat to them
           if (insuranceCompany.integration) {
-            const topic = `${insuranceCompany.integration.topicPrefix}.constat.created`;
+            const topic = `${insuranceCompany.integration.topic_prefix}.constat.created`;
             this.constatClient.emit(topic, {
               ...savedConstat,
             });
