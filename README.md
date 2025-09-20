@@ -11,6 +11,7 @@ This project is currently in active development. Contributions are welcome!
 ## 📖 Table of Contents
 
 * [🚀 Features](#-features)
+* [ Architecture](#architecture)
 * [📂 Folder Structure](#-folder-structure)
 * [🛠️ Setup & Run](#-setup--run)
 * [🧪 Scripts](#-scripts)
@@ -42,6 +43,11 @@ This project is currently in active development. Contributions are welcome!
 * 📑 **Request Logging**: Custom interceptor for logging HTTP traffic.
 
 ---
+
+## Architecture
+This project follows a modular architecture, with each feature encapsulated in its own module. This promotes separation of concerns, easier maintenance, and scalability.
+Moreover, the project focused on ease of integration with the provider's system, making it adaptable to various use cases.
+for more details about the architecture, please refer to the [ARCHITECTURE.md](ARCHITECTURE.md) file.
 
 ## 📂 Folder Structure
 
