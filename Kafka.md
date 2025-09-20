@@ -8,7 +8,7 @@ Our E-assurance platform uses a centralized Kafka cluster for event-driven commu
 - **E-assurance Platform**: Central platform that consumes all provider events
 - **Centralized Kafka Cluster**: Message broker with topic-level security
 - **Insurance Providers**: Individual platforms (SAA, Trust, etc.) with REST APIs
-- **Provider Registration Service**: Automated onboarding system
+- **Provider Registration Service**: Automated onboarding system (A nestjs Module to be impleneted soon with automations integration )
 
 ## Topic Naming Convention
 
