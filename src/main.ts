@@ -27,7 +27,6 @@ async function bootstrap() {
         brokers: ['kafka:9092'],
       },
 
-
       producerOnlyMode: false,
       consumer: {
         groupId: 'dla3-consumer',

@@ -33,7 +33,7 @@ export class ConstatGateway {
 
     const session: ConstatSession = {
       sessionId,
-      //TODO get this from socket
+      //TODO: get this from socket
       driverAId: payload.userId,
       draft: {},
       accepted: [],
@@ -111,12 +111,10 @@ export class ConstatGateway {
     const session = await this.redisService.get<ConstatSession>(key);
     if (!session) return client.emit('error', { msg: 'Session not found' });
 
-    // Initialize signatures array if not exists
     if (!session.draft.signatures) {
       session.draft.signatures = [];
     }
 
-    // Add visual signature
     const visualSignature = {
       id: uuid(),
       driverId: payload.userId,
@@ -124,8 +122,7 @@ export class ConstatGateway {
       signatureData: payload.visualSignatureData,
     };
 
-    // Generate crypto signature (you'll need to implement this based on your crypto logic)
-    const cryptoSignatureData = this.signatureService.generateHash();
+    const cryptoSignatureData = this.signatureService.generateCryptoSignature();
     const cryptoSignature = {
       id: uuid(),
       driverId: payload.userId,
@@ -133,10 +130,8 @@ export class ConstatGateway {
       signatureData: cryptoSignatureData,
     };
 
-    // Add both signatures to session
     session.draft.signatures.push(visualSignature, cryptoSignature);
 
-    // Update signature validation
     if (!session.signatureValidation) {
       session.signatureValidation = {};
     }

@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Signature } from './entities/signature.entity';
 import { Repository } from 'typeorm';
 import { CreateSignatureInput } from './dtos/create-signature.dto';
-import { ConstatSession } from 'src/constats/types/constat-session.type';
 
 @Injectable()
 export class SignatureService {
@@ -13,11 +12,6 @@ export class SignatureService {
     private readonly signatureRepo: Repository<Signature>,
   ) {}
 
-  /**
-   * @description Sanitizes the svg code .
-   * @param svgCode The embeded code to sanitize.
-   * @returns The sanitized svg code.
-   */
   sanitizeSvgCode(svgCode: string) {
     return sanitizeHtml(svgCode, {
       allowedTags: [
@@ -54,35 +48,20 @@ export class SignatureService {
     const signature = this.signatureRepo.create({
       ...dto,
       visualSignature: this.sanitizeSvgCode(dto.visualSignature),
-      cryptoSignature: this.generateHash(),
+      cryptoSignature: this.generateCryptoSignature(),
     });
     return await this.signatureRepo.save(signature);
-  }
-
-  generateHash() {
-    return 'strong hash';
   }
 
   getSignatureById(id: string) {
     return this.signatureRepo.findOneOrFail({ where: { id } });
   }
 
-  getSignatureByUser(driverId: string) {
-    return this.signatureRepo.findBy({ driverId });
+  generateCryptoSignature() {
+    return 'generate a hash';
   }
 
-  async generateCryptoSignature(
-    session: ConstatSession,
-    userId: string,
-  ): Promise<string> {
-    // NOTE: Implement crypto signature logic here
-
-    const sessionDataForSigning = {
-      sessionId: session.sessionId,
-      userId,
-      timestamp: Date.now(),
-      // Include relevant session data
-    };
-    return 'generate a hash';
+  getSignatureByUser(driverId: string) {
+    return this.signatureRepo.findBy({ driverId });
   }
 }

@@ -5,6 +5,7 @@ import {
   Res,
   UseGuards,
   UseInterceptors,
+  Inject,
 } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { PaymentService } from './payment.service';
@@ -18,7 +19,7 @@ import paymentConfig from 'src/config/payment.config';
 export class PaymentController {
   constructor(
     private readonly paymentService: PaymentService,
-    @paymentConfig.KEY
+    @Inject(paymentConfig.KEY)
     private readonly paymentConf: ConfigType<typeof paymentConfig>,
   ) {}
   @Get('callback')
