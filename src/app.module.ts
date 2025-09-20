@@ -32,6 +32,7 @@ import { PaymentModule } from './payment/payment.module';
 import { UserInsurranceModule } from './user_insurrance/user_insurrance.module';
 import aiConfig from './config/ai.config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { IntegrationModule } from './integration/integration.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync(databaseConfig.asProvider()),
@@ -77,7 +78,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         transport: Transport.KAFKA,
         options: {
           client: {
-          
             clientId: 'ai_service',
             brokers: ['kafka:9092'],
           },
@@ -86,8 +86,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
             groupId: 'ai-consumer',
           },
           producerOnlyMode: true,
-          
-          
         },
       },
     ]),
@@ -105,6 +103,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     PaymentModule,
     UserInsurranceModule,
     WithdrawModule,
+    IntegrationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
