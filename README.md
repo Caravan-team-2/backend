@@ -137,21 +137,5 @@ To start all services, run:
 docker-compose up -d
 ```
 
----
-
-## 📦 License
-
-MIT © 2025 Mouloud Hasrane
-
-## 🤝 Contributing
-
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to this project.
-**ps**: this folder will also include commits practices docuemnted here [COMMIT.md](COMMIT.md)
-
-## 🧑‍💻 Author
-
-Mouloud Hasrane
-
-## 📬 Contact
 
 If you have any questions or suggestions, feel free to reach out via: [mouloudhasrane@gmail.com](mailto:mouloudhasrane@gmail.com)
