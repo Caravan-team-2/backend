@@ -29,6 +29,7 @@ This project is currently in active development. Contributions are welcome!
 * 🔐 **Authentication System**: Passport.js with JWT strategy for secure user authentication.
 * 🐘 **Database**: TypeORM integration with PostgreSQL for robust data management.
 * 🤖 **GraphQL**: Apollo Server integration for flexible and efficient API queries.  
+* ⚡ **Optimization**: DataLoader integration to efficiently batch and cache queries, preventing N+1 query issues.
 * 🧠 **Redis Integration**: `ioredis` for caching, background job queues, and WebSocket scaling.  
 * 📡 **Microservice Ready**: Kafka integration for building a distributed, event-driven architecture.   
 * 🌐 **WebSockets**: Real-time communication with Socket.io and Redis adapter for horizontal scaling.  
