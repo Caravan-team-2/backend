@@ -26,10 +26,10 @@ This project is currently in active development. Contributions are welcome!
 * ✅ **Modular Configuration**: Centralized config management via `.env` and `ConfigModule`.
 * 🔐 **Authentication System**: Passport.js with JWT strategy for secure user authentication.
 * 🐘 **Database**: TypeORM integration with PostgreSQL for robust data management.
-* 🤖 **GraphQL**: Apollo Server integration for flexible and efficient API queries.
-* 🧠 **Redis Integration**: `ioredis` for caching, background job queues, and WebSocket scaling.
-*  kafka **Microservice Ready**: Kafka integration for building a distributed, event-driven architecture.
-* 🌐 **WebSockets**: Real-time communication with Socket.io and Redis adapter for horizontal scaling.
+* 🤖 **GraphQL**: Apollo Server integration for flexible and efficient API queries.  
+* 🧠 **Redis Integration**: `ioredis` for caching, background job queues, and WebSocket scaling.  
+* 📡 **Microservice Ready**: Kafka integration for building a distributed, event-driven architecture.   
+* 🌐 **WebSockets**: Real-time communication with Socket.io and Redis adapter for horizontal scaling.  
 * 📬 **Mailing Module**: Mailer integration for sending transactional emails.
 * ☁️ **Cloud Storage**: Cloudinary module for seamless media uploads and management.
 * 📄 **PDF Generation**: Built-in service using Puppeteer to generate PDFs dynamically.
