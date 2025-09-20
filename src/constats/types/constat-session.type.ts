@@ -1,3 +1,5 @@
+//NOTE: this implemenation is missing the  validation needed for a distributed event driven architecture
+//we would need to add class validators and also validate the draft before accepting the constat
 export type ConstatSessionStatus = 'draft' | 'submitted';
 
 export interface ConstatSession {
@@ -5,6 +7,8 @@ export interface ConstatSession {
 
   driverAId: string;
   driverBId?: string;
+  ninA?: string;
+  ninB?: string;
 
   draft: {
     dateTime?: string;

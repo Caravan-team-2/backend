@@ -13,6 +13,7 @@ import { SignatureModule } from 'src/signature/signature.module';
 import { ConstatGatewayDocsController } from './constats.controller';
 import { User } from 'src/user/entities/user.entity';
 import { PaymentModule } from 'src/payment/payment.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -27,6 +28,22 @@ import { PaymentModule } from 'src/payment/payment.module';
     ]),
     SignatureModule,
     PaymentModule,
+    ClientsModule.register([
+      {
+        name: 'CONSTAT_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'constat_service',
+            brokers: ['kafka:9092'],
+          },
+          producer: {
+            // Topics will be created on configurations to ensure controll over them
+            allowAutoTopicCreation: false,
+          },
+        },
+      },
+    ]),
   ],
   providers: [ConstatsResolver, ConstatsService, ConstatGateway],
   controllers: [ConstatGatewayDocsController],

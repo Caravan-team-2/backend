@@ -1,10 +1,19 @@
-
 import { Controller, Post, Patch, Delete } from '@nestjs/common';
+import {
+  Ctx,
+  KafkaContext,
+  MessagePattern,
+  Payload,
+} from '@nestjs/microservices';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
+import { Constat } from './entities/constat.entity';
+import { ConstatSession } from './types/constat-session.type';
+import { ConstatsService } from './constats.service';
 
-@ApiTags('Constat Gateway')
-@Controller('constat-gateway-docs')
+@ApiTags('Constat ')
+@Controller('constat')
 export class ConstatGatewayDocsController {
+  constructor(private readonly constatService: ConstatsService) {}
   @ApiOperation({
     summary: 'Create a new constat session',
     description: 'Event: create_session',
@@ -58,7 +67,8 @@ export class ConstatGatewayDocsController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Emits draft_updated event with the updated draft and timestamp',
+    description:
+      'Emits draft_updated event with the updated draft and timestamp',
   })
   @Patch('update-draft')
   updateDraft() {}
@@ -82,4 +92,29 @@ export class ConstatGatewayDocsController {
   })
   @Post('accept')
   accept() {}
-}
+  public extractProviderFromTopic(topic: string, suffix: string): string {
+    return topic.replace(suffix, '');
+
+  }
+  /*
+   *since we need to create the topics in the config files beforehand I will comment this for now 
+   * /
+  /*
+   *@MessagePattern('-constat.created')
+  async handleConstatCreated(
+    @Payload() data: ConstatSession,
+    @Ctx() context: KafkaContext,
+  ) {
+    const topic = context.getTopic();
+    const providerId = this.extractProviderFromTopic(topic, '-constat.created');
+
+    console.log(`Received constat from provider: ${providerId}`);
+    console.log(`Topic: ${topic}`);
+    console.log(`Data:`, data);
+
+    // Route to provider-specific handler
+    return this.constatService.finalizeFromSession(data);
+  }
+
+   * */
+  }

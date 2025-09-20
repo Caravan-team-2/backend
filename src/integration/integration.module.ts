@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { IntegrationService } from './integration.service';
-import { IntegrationController } from './integration.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Integration } from './entities/integration.entity';
+import { IntegrationResolver } from './integration.resolver';
 
 @Module({
-  controllers: [IntegrationController],
-  providers: [IntegrationService],
+  imports: [TypeOrmModule.forFeature([Integration])],
+  providers: [IntegrationResolver, IntegrationService],
 })
 export class IntegrationModule {}
