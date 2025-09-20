@@ -6,15 +6,21 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { PaymentService } from './payment.service';
 import { Response } from 'express';
 import { IdempotencyInterceptor } from 'src/common/interceptors/idempotency.interceptor';
 import { AcessTokenGuard } from 'src/authentication/guards/access-token.guard';
+import paymentConfig from 'src/config/payment.config';
 @UseInterceptors(IdempotencyInterceptor)
 @UseGuards(AcessTokenGuard)
 @Controller('payments')
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
+  constructor(
+    private readonly paymentService: PaymentService,
+    @paymentConfig.KEY
+    private readonly paymentConf: ConfigType<typeof paymentConfig>,
+  ) {}
   @Get('callback')
   async handlePaymentCallback(
     @Query('order_number') orderNumber: string,
@@ -22,12 +28,11 @@ export class PaymentController {
   ) {
     try {
       await this.paymentService.handlePaymentCallback(orderNumber);
-      // TODO :get this from the config url
       // Redirect the user to a success page on the frontend
-      res.redirect('https://your-frontend-app.com/payment-success');
+      res.redirect(this.paymentConf.redirect.successUrl);
     } catch (error) {
       // Redirect the user to a failure page on the frontend
-      res.redirect('https://your-frontend-app.com/payment-failure');
+      res.redirect(this.paymentConf.redirect.failureUrl);
     }
   }
 }

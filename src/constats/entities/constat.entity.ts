@@ -18,6 +18,7 @@ import { Signature } from '../../signature/entities/signature.entity';
 
 export enum ConstatStatus {
   SUBMITTED = 'SUBMITTED',
+  IN_REVIEW = 'IN_REVIEW',
   VALIDATED = 'VALIDATED',
   REJECTED = 'REJECTED',
 }
@@ -64,6 +65,9 @@ export class Constat {
   @Field()
   injuredCount: number;
 
+  @Column()
+  @Field()
+  isPaid: boolean;
   @CreateDateColumn({ name: 'created_at' })
   @Field()
   createdAt: Date;

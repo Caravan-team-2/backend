@@ -15,6 +15,7 @@ import authConfig from './config/auth.config';
 import { RedisModule } from 'nestjs-redis-client';
 import cloudConfig from './config/cloud.config';
 import appConfig from './config/app.config';
+import paymentConfig from './config/payment.config';
 
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -67,6 +68,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         appConfig,
         cloudConfig,
         aiConfig,
+        paymentConfig,
       ],
     }),
     ClientsModule.register([

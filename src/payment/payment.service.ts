@@ -6,16 +6,20 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { EntityManager, Repository } from 'typeorm';
-import { Transaction, TransactionStatus } from './entities/payment.entity';
+import { Transaction, TransactionStatus, TransactionType } from './entities/payment.entity';
 import { PaymentHttpService } from './payment-http.service';
 import { InitPaymentReqDto } from './dto/init-paymet-req.dto';
+import { ConstatPaymentDto } from './dto/constat-payment.dto';
 import { isAxiosError } from '@nestjs/terminus/dist/utils';
+import { Constat } from 'src/constats/entities/constat.entity';
 
 @Injectable()
 export class PaymentService {
   constructor(
     @InjectRepository(Transaction)
     private readonly transactionRepository: Repository<Transaction>,
+    @InjectRepository(Constat)
+    private readonly constatRepository: Repository<Constat>,
     private readonly entityManager: EntityManager,
     private readonly paymentHttpService: PaymentHttpService,
   ) {}
@@ -41,7 +45,9 @@ export class PaymentService {
     const transaction = this.transactionRepository.create({
       userId,
       amount: String(amount),
+      type: TransactionType.EXTERNAL,
       transaction_id: paymentDetails.id, // Temporary ID from init
+      order_number: `topup-${Date.now()}`,
       form_url: paymentDetails.attributes.form_url,
       status: TransactionStatus.PENDING,
     });
@@ -79,7 +85,7 @@ export class PaymentService {
         }
 
         // Update the transaction with the final details from the gateway
-        transaction.transaction_id = paymentDetails.data.id;
+transaction.order_number=paymentDetails.data.attributes.order_number;
 
         if (paymentDetails.data.attributes.status === 'SUCCESS') {
           transaction.status = TransactionStatus.SUCCESS;
@@ -134,12 +140,76 @@ export class PaymentService {
         status: TransactionStatus.SUCCESS,
         userId,
         amount,
+        type: TransactionType.INTERNAL,
         order_number, // The reference for the internal credit (e.g., constatId)
-
         transaction_id: 'internal-' + Date.now(), // Unique internal ID
+        form_url: '', // Not needed for internal transactions
       });
 
       return manager.save(transaction);
+    });
+  }
+
+  /**
+   * CONSTAT PAYMENT
+   * Initiates payment for a constat and updates the isPaid status to true.
+   * This method handles the payment flow for constat processing fees.
+   */
+  async processConstatPayment(
+    userId: string,
+    { constatId, language }: ConstatPaymentDto,
+  ): Promise<Transaction> {
+    return this.entityManager.transaction(async (manager) => {
+      // Find the constat and verify it exists and belongs to the user
+      const constat = await manager.findOne(Constat, {
+        where: { id: constatId },
+      });
+
+      if (!constat) {
+        throw new NotFoundException('Constat not found');
+      }
+
+      // Verify the user is involved in this constat
+      if (constat.driverAId !== userId && constat.driverBId !== userId) {
+        throw new NotFoundException('Constat not found for this user');
+      }
+
+      // Check if constat is already paid
+      if (constat.isPaid) {
+        throw new InternalServerErrorException('Constat is already paid');
+      }
+
+      // Get the cost from the constat (should be set by an expert)
+      if (!constat.cost) {
+        throw new InternalServerErrorException('Constat cost not estimated yet');
+      }
+
+      // Initiate payment with the gateway
+      const paymentDetails = await this.paymentHttpService.initPayment({
+        amount: constat.cost,
+        language,
+      });
+
+      if (!paymentDetails) {
+        throw new InternalServerErrorException('Failed to initiate payment');
+      }
+
+      // Create transaction record
+      const transaction = manager.create(Transaction, {
+        userId,
+        amount: constat.cost,
+        type: TransactionType.EXTERNAL,
+        transaction_id: paymentDetails.id,
+        form_url: paymentDetails.attributes.form_url,
+        status: TransactionStatus.PENDING,
+      });
+
+      const savedTransaction = await manager.save(transaction);
+
+      // Update constat isPaid status to true
+      await manager.update(Constat, { id: constatId }, { isPaid: true });
+
+      return savedTransaction;
     });
   }
 }

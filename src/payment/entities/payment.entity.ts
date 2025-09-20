@@ -7,7 +7,7 @@ export enum TransactionStatus {
   FAILED = 'FAILED',
 
 }
-  enum TransactionType {
+export enum TransactionType {
   EXTERNAL = 'EXTERNAL',
   INTERNAL = 'INTERNAL',
 }

@@ -67,12 +67,6 @@ export class ConstatsService {
       throw new NotFoundException('Validator not found');
     }
 
-    await this.paymentService.creditUserBalance(
-      constat.driverBId,
-      constat.cost,
-      constat.id,
-    );
-
     constat.status = ConstatStatus.VALIDATED;
     return this.constatRepo.save(constat);
   }
